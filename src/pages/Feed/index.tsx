@@ -75,6 +75,7 @@ export const FeedContainer: React.FC = () => {
     ]
 
     const weekDayIndex = moment().isoWeekday() - 1
+    const lessonsLength = lessons[weekDayIndex].length
     
     return (
         <>
@@ -102,34 +103,44 @@ export const FeedContainer: React.FC = () => {
                                 color='processing' 
                                 style={{ marginLeft: 4, marginRight: 2, fontSize: 14 }}
                             >
-                                { lessons[weekDayIndex].length } 
+                                { lessonsLength } 
                                 
                                 {' '}
 
                                 занятия
                             </Tag>
 
-                            :
-
-                            &nbsp;
-
                             {
-                                lessons[weekDayIndex].map((lesson, index) => (
+                                !!lessonsLength && (
                                     <>
-                                        <Tag 
-                                            color={lesson.color} 
-                                            style={{ marginLeft: 4, marginRight: 0, fontSize: 14 }}
-                                        >
-                                            { lesson.title }
-                                        </Tag>
+                                        :
+
+                                        &nbsp;
 
                                         {
-                                            (index + 1) !== lessons[weekDayIndex].length && (
-                                                ', '
-                                            )
+                                            lessons[weekDayIndex].map((lesson, index) => (
+                                                <>
+                                                    <Tag 
+                                                        color={lesson.color} 
+                                                        style={{ 
+                                                            marginLeft: 4, 
+                                                            marginRight: 0, 
+                                                            fontSize: 14 
+                                                        }}
+                                                    >
+                                                        { lesson.title }
+                                                    </Tag>
+
+                                                    {
+                                                        (index + 1) !== lessonsLength && (
+                                                            ', '
+                                                        )
+                                                    }
+                                                </>
+                                            ))
                                         }
                                     </>
-                                ))
+                                )
                             }
                         </p>
                     </>
