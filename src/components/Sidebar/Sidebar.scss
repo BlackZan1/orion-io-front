@@ -1,0 +1,92 @@
+.main-sidebar {
+    background: var(--white-color);
+    width: 240px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0.5px 0.5px 5px rgba($color: #000000, $alpha: 0.1);
+    display: -webkit-flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 10px 20px;
+
+    &__logo {
+        display: -webkit-flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 2rem;
+
+        & > span {
+            margin-bottom: 6px;
+        }
+
+        & > svg {
+            width: 120px;
+            height: 48px;
+        }
+    }
+
+    &__item {
+        &__title {
+            display: -webkit-flex;
+            justify-content: space-between;
+            align-items: center;
+    
+            & > span {
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            &__icon {
+                cursor: pointer;
+            }
+        }
+
+        &__items {
+            padding: 10px 0;
+            transition: all .3s ease;
+
+            & > div {
+                display: -webkit-flex;
+                margin-left: -10px;
+                margin-right: -20px;
+                padding: 12px 10px;
+                cursor: pointer;
+                transition: all .3s ease;
+                border-right: 3px solid var(--white-color);
+                transition: all .3s ease;
+
+                & > span, & > svg > path, & > svg > circle {
+                    transition: all .2s ease;
+                }
+
+                & > span {
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: var(--grey-5-color);
+                }
+
+                &.is-active, &:hover {
+                    border-right: 3px solid var(--aqua-color);
+
+                    & > span {
+                        color: var(--aqua-color);
+                    }
+
+                    svg:not(.is-stroke-svg) {
+                        & > path, & > circle {
+                            fill: var(--aqua-color);
+                        }
+                    }
+
+                    svg.is-stroke-svg {
+                        & > path, & > circle {
+                            stroke: var(--aqua-color);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

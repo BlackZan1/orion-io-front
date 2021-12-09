@@ -1,0 +1,33 @@
+.members {
+    &__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    &__count {
+        color: var(--aqua-color);
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    &__table {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .ant-table-wrapper {
+        .ant-table {
+            border-radius: 12px !important;
+            overflow: hidden;
+
+            .ant-table-thead {
+                & > tr > th {
+                    font-size: 16px;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}

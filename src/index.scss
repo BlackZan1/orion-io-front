@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --white-color: #ffffff;
+    --grey-color: #f3f3f3;
+    --grey-2-color: #f8f8f8;
+    --grey-3-color: #e6e6e6;
+    --grey-4-color: #b1b1b1;
+    --grey-5-color: #4d4d4d;
+    --black-2-color: #1f1f1f;
+    --aqua-color: #56CCF2;
+}
+
+body {
+    background-color: var(--grey-color) !important;
+    font-family: 'Almarai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.fade-in {
+    animation: fadeIn .3s ease;
+}
+
+.main-content {
+    width: calc(100% - 240px);
+    min-height: 100vh;
+    margin-left: 240px;
+    padding: 20px 30px;
+
+    &__title {
+        display: -webkit-flex;
+        align-items: center;
+        font-size: 28px;
+        font-weight: 600;
+        min-height: 78px;
+        margin-bottom: 20px;
+    }
+
+    &__header {
+        position: absolute;
+        display: -webkit-flex;
+        right: 30px;
+
+        & > div:first-child {
+            margin-right: 15px;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

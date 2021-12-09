@@ -1,0 +1,21 @@
+.main-clock {
+    background: var(--white-color);
+    border: 1px solid var(--grey-3-color);
+    border-radius: 12px;
+    height: 78px;
+    min-width: 78px;
+    padding: 0 10px;
+    display: -webkit-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0.5px 0.5px 5px rgba($color: #000000, $alpha: 0.1);
+
+    & > p {
+        font-size: 16px;
+        margin-bottom: 0px;
+        font-weight: 600;
+        align-self: flex-end;
+        padding-right: 5px;
+    }
+}
