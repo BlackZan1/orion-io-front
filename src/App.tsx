@@ -10,16 +10,18 @@ import { FeedContainer } from 'pages/Feed'
 import { ScheduleContainer } from 'pages/Schedule'
 import { MembersContainer } from 'pages/Members'
 import { NewsContainer } from 'pages/News'
+import { RegisterContainer } from 'pages/Register'
+import { UserContainer } from 'pages/User'
 
 // layouts
 import { MainLayout } from 'layouts/MainLayout'
+import { AuthLayout } from 'layouts/AuthLayout'
 
 // styles
 import 'styles/styles.less'
 
 // locales
 import 'moment/locale/ru'
-import { UserContainer } from 'pages/User'
 
 moment.locale('ru')
 
@@ -54,6 +56,12 @@ export const App = () => {
                 <MainLayout withoutUserInfo className='user-page'>
                     <UserContainer />
                 </MainLayout>
+            </Route>
+
+            <Route path={routes.auth.signin} exact>
+                <AuthLayout>
+                    <RegisterContainer />
+                </AuthLayout>
             </Route>
 
             <Redirect to={routes.auth.signin} />

@@ -8,20 +8,25 @@
         margin-top: 8px;
 
         & > span {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
-            background: var(--white-color);
             position: absolute;
-            top: -14px;
+            top: -11px;
             left: 15px;
-            padding: 0 5px;
+            text-align: right;
+            width: 52px;
+
+            & > span {
+                background: var(--white-color);
+                padding: 0 5px;
+            }
         }
     }
 
     &__event {
         position: absolute;
-        width: calc(100% - 70px);
-        left: 70px;
+        width: calc(100% - 75px);
+        left: 75px;
         overflow: hidden;
         display: -webkit-flex;
         flex-direction: column;

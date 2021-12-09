@@ -112,7 +112,9 @@ export const ScheduleOneDay: React.FC<{ classes: ClassItem[] }> = ({
                 time.map((t, index) => (
                     <div className='schedule-one-day__item' key={index}>
                         <span>
-                            { t }
+                            <span>
+                                { t }
+                            </span>
                         </span>
                     </div>
                 ))

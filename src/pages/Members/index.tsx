@@ -80,7 +80,7 @@ export const MembersContainer: React.FC = () => {
         {
             key: '1',
             name: 'Жазгуль',
-            lastName: 'Сэнсэй',
+            lastName: 'Эже',
             birthDay: bd,
             role: 1,
             about: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem quaerat nemo veritatis neque doloribus. Dolores culpa esse possimus repudiandae ab architecto optio corporis ducimus! Atque nostrum unde nesciunt sapiente illo.'

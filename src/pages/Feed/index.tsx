@@ -21,56 +21,56 @@ export const FeedContainer: React.FC = () => {
             text: 'Открываю доступ к сессии за осенний семестр',
             photo: 'https://zvuch.com/img/collections/340290_large.jpg',
             name: 'Жазгуль',
-            lastName: 'Сэнсэй'
+            lastName: 'Эже'
         },
         {
             id: 2,
             text: 'Открываю доступ к сессии за осенний семестр',
             photo: 'https://zvuch.com/img/collections/340290_large.jpg',
             name: 'Жазгуль',
-            lastName: 'Сэнсэй'
+            lastName: 'Эже'
         },
         {
             id: 3,
             text: 'Открываю доступ к сессии за осенний семестр',
             photo: 'https://zvuch.com/img/collections/340290_large.jpg',
             name: 'Жазгуль',
-            lastName: 'Сэнсэй'
+            lastName: 'Эже'
         },
         {
             id: 4,
             text: 'Открываю доступ к сессии за осенний семестр',
             photo: 'https://zvuch.com/img/collections/340290_large.jpg',
             name: 'Жазгуль',
-            lastName: 'Сэнсэй'
+            lastName: 'Эже'
         },
         {
             id: 5,
             text: 'Открываю доступ к сессии за осенний семестр',
             photo: 'https://zvuch.com/img/collections/340290_large.jpg',
             name: 'Жазгуль',
-            lastName: 'Сэнсэй'
+            lastName: 'Эже'
         },
         {
             id: 6,
             text: 'Открываю доступ к сессии за осенний семестр',
             photo: 'https://zvuch.com/img/collections/340290_large.jpg',
             name: 'Жазгуль',
-            lastName: 'Сэнсэй'
+            lastName: 'Эже'
         },
         {
             id: 7,
             text: 'Открываю доступ к сессии за осенний семестр',
             photo: 'https://zvuch.com/img/collections/340290_large.jpg',
             name: 'Жазгуль',
-            lastName: 'Сэнсэй'
+            lastName: 'Эже'
         },
         {
             id: 8,
             text: 'Открываю доступ к сессии за осенний семестр',
             photo: 'https://zvuch.com/img/collections/340290_large.jpg',
             name: 'Жазгуль',
-            lastName: 'Сэнсэй'
+            lastName: 'Эже'
         }
     ]
 

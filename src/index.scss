@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 * {
     padding: 0;
@@ -13,13 +15,14 @@
     --grey-3-color: #e6e6e6;
     --grey-4-color: #b1b1b1;
     --grey-5-color: #4d4d4d;
+    --grey-6-color: #696969;
     --black-2-color: #1f1f1f;
     --aqua-color: #56CCF2;
 }
 
 body {
     background-color: var(--grey-color) !important;
-    font-family: 'Almarai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .fade-in {
@@ -45,10 +48,6 @@ body {
         position: absolute;
         display: -webkit-flex;
         right: 30px;
-
-        & > div:first-child {
-            margin-right: 15px;
-        }
     }
 }
 

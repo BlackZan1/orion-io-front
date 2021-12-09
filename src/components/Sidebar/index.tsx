@@ -7,9 +7,11 @@ import { useHistory } from 'react-router'
 // assets
 import { ReactComponent as LogoSVG } from 'assets/logo.svg'
 
+// utils
+import { routes } from 'utils/router'
+
 // styles
 import './Sidebar.scss'
-import { routes } from 'utils/router'
 
 export const Sidebar: React.FC = () => {
     const [open, setOpen] = useState<boolean>(true)
