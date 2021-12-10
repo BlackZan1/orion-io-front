@@ -61,7 +61,7 @@ export const RegisterContainer: React.FC = () => {
                         </div>
                     </>
                 )
-            case 'group': 
+            case 'group': // Убрать!
                 return (
                     <>
                         <div style={{ width: '100%' }}>
