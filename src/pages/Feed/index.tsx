@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Tag } from 'antd'
 import moment from 'moment'
+import { observer } from 'mobx-react'
 
 // components
 import { InfoBlock } from 'components/InfoBlock'
@@ -10,11 +11,14 @@ import { NewsItem } from 'components/NewsItem'
 // utils
 import { lessons } from 'pages/Schedule'
 import { fullWeekDays } from 'utils/dates'
+import { AuthStore } from 'store/auth'
 
 // styles
 import './Feed.scss'
 
-export const FeedContainer: React.FC = () => {
+export const FeedContainer: React.FC = observer(() => {
+    const [authStore] = useState(AuthStore)
+
     const news = [
         {
             id: 1,
@@ -77,6 +81,8 @@ export const FeedContainer: React.FC = () => {
     const weekDayIndex = moment().isoWeekday() - 1
     const lessonsLength = lessons[weekDayIndex].length
     
+    console.log(authStore)
+
     return (
         <>
             <InfoBlock 
@@ -175,4 +181,4 @@ export const FeedContainer: React.FC = () => {
             </div>
         </>
     )
-}
+})

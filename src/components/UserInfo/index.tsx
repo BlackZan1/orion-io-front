@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Tag } from 'antd'
 import Avatar from 'antd/lib/avatar/avatar'
 import { useHistory } from 'react-router'
+import { observer } from 'mobx-react'
+
+// stores
+import { AuthStore } from 'store/auth'
 
 // utils
 import { routes } from 'utils/router'
@@ -9,8 +13,16 @@ import { routes } from 'utils/router'
 // styles
 import './UserInfo.scss'
 
-export const UserInfo: React.FC = () => {
+export const UserInfo: React.FC = observer(() => {
+    const [authStore] = useState(AuthStore)
     const history = useHistory()
+
+    const { 
+        firstName, 
+        lastName, 
+        photoUrl,
+        role
+    } = authStore.user
 
     return (
         <div 
@@ -18,12 +30,20 @@ export const UserInfo: React.FC = () => {
             onClick={() => history.push(routes.user.replace(':id', '1'))}
         >
             <div>
-                <p>Назар Саалиев</p>
+                <p>
+                    { firstName } 
+                    
+                    &nbsp;
 
-                <Tag color='warning'>Студент</Tag>
+                    { lastName }
+                </p>
+
+                <Tag color={role.color}>
+                    { role.name }
+                </Tag>
             </div>
 
-            <Avatar size={40} src='https://pbs.twimg.com/profile_images/1261251796510617600/Ls12DaWX_400x400.jpg' />
+            <Avatar size={42} src={authStore.user.photoUrl} />
         </div>
     )
-}
+})

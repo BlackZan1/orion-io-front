@@ -1,21 +1,15 @@
-import React from 'react'
-import { Redirect, Route, Switch } from 'react-router'
+import React, { useEffect, useState } from 'react'
 import moment from 'moment'
+import { observer } from 'mobx-react'
 
-// utils
-import { routes } from 'utils/router'
+// components
+import { AppRoutes } from 'routes'
 
-// pages
-import { FeedContainer } from 'pages/Feed'
-import { ScheduleContainer } from 'pages/Schedule'
-import { MembersContainer } from 'pages/Members'
-import { NewsContainer } from 'pages/News'
-import { RegisterContainer } from 'pages/Register'
-import { UserContainer } from 'pages/User'
+// stores
+import { AuthStore } from 'store/auth'
 
-// layouts
-import { MainLayout } from 'layouts/MainLayout'
-import { AuthLayout } from 'layouts/AuthLayout'
+// hooks
+import { useLocaleStorage } from 'hooks/localStorage.hook'
 
 // styles
 import 'styles/styles.less'
@@ -25,46 +19,16 @@ import 'moment/locale/ru'
 
 moment.locale('ru')
 
-export const App = () => {
+export const App = observer(() => {
+    const [authStore] = useState(AuthStore)
+    const { value: tokenValue } = useLocaleStorage('orion_t')
+
+    useEffect(() => {
+        if(!!tokenValue) authStore.me()
+        else authStore.auth = false
+    }, [tokenValue, authStore.token])
+
     return (
-        <Switch>
-            <Route path={routes.main} exact>
-                <MainLayout title='Главная страница' className='feed'>
-                    <FeedContainer />
-                </MainLayout>
-            </Route>
-
-            <Route path={routes.news} exact>
-                <MainLayout title='Новости' className='news'>
-                    <NewsContainer />
-                </MainLayout>
-            </Route>
-
-            <Route path={routes.schedule} exact>
-                <MainLayout title='Расписание' className='schedule'>
-                    <ScheduleContainer />
-                </MainLayout>
-            </Route>
-
-            <Route path={routes.members} exact>
-                <MainLayout title='Участники' className='members'>
-                    <MembersContainer />
-                </MainLayout>
-            </Route>
-
-            <Route path={routes.user} exact>
-                <MainLayout withoutUserInfo className='user-page'>
-                    <UserContainer />
-                </MainLayout>
-            </Route>
-
-            <Route path={routes.auth.signin} exact>
-                <AuthLayout>
-                    <RegisterContainer />
-                </AuthLayout>
-            </Route>
-
-            <Redirect to={routes.auth.signin} />
-        </Switch>
+        <AppRoutes />
     )
-}
+})
