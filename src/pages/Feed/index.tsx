@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Tag } from 'antd'
 import moment from 'moment'
 import { observer } from 'mobx-react'
@@ -8,16 +8,37 @@ import { InfoBlock } from 'components/InfoBlock'
 import { ScheduleOneDay } from 'components/ScheduleOneDay'
 import { NewsItem } from 'components/NewsItem'
 
+// hooks
+import { usePageTitle } from 'hooks/pageTitle.hook'
+
 // utils
-import { lessons } from 'pages/Schedule'
 import { fullWeekDays } from 'utils/dates'
+
+// stores
 import { AuthStore } from 'store/auth'
+import { ScheduleStore } from 'store/schedule'
+import { StudySpaceStore } from 'store/studySpace'
 
 // styles
 import './Feed.scss'
 
 export const FeedContainer: React.FC = observer(() => {
+    const [studyStore] = useState(StudySpaceStore)
     const [authStore] = useState(AuthStore)
+    const [scheduleStore] = useState(ScheduleStore)
+    const { rename } = usePageTitle('')
+
+    const { schedule: scheduleId } = studyStore.activeGroup
+
+    useEffect(() => {
+        if(scheduleStore.data.id !== scheduleId) {
+            scheduleStore.getById(scheduleId)
+        }
+    }, [scheduleId])
+
+    useEffect(() => {
+        rename(`${studyStore.activeGroup.name} | Главная страница`)
+    }, [])
 
     const news = [
         {
@@ -78,15 +99,17 @@ export const FeedContainer: React.FC = observer(() => {
         }
     ]
 
+    const lessons = scheduleStore.loaded ? scheduleStore.lessons : []
+    const { user } = authStore
+
     const weekDayIndex = moment().isoWeekday() - 1
-    const lessonsLength = lessons[weekDayIndex].length
-    
-    console.log(authStore)
+    const lessonsLength = lessons.length && lessons[weekDayIndex].length
+    const currentLesson = lessons[weekDayIndex] || []
 
     return (
         <>
             <InfoBlock 
-                title='🧠 Добро пожаловать, Назар!'
+                title={`🧠 Добро пожаловать, ${user.firstName}!`}
                 content={(
                     <>
                         <p>
@@ -124,7 +147,7 @@ export const FeedContainer: React.FC = observer(() => {
                                         &nbsp;
 
                                         {
-                                            lessons[weekDayIndex].map((lesson, index) => (
+                                            currentLesson.map((lesson: any, index: number) => (
                                                 <>
                                                     <Tag 
                                                         color={lesson.color} 
@@ -159,7 +182,8 @@ export const FeedContainer: React.FC = observer(() => {
                     withHeader
                     content={(
                         <ScheduleOneDay 
-                            classes={lessons[weekDayIndex]}
+                            classes={currentLesson}
+                            isEditable={false}
                         />
                     )}
                 /> 

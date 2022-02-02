@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Button, Input, Tag } from 'antd'
-import { useHistory } from 'react-router'
 import { observer } from 'mobx-react'
 import { useForm } from 'react-hook-form'
 
@@ -12,7 +11,6 @@ import { AuthStore } from 'store/auth'
 
 // utils
 import { LoginData } from 'interfaces/auth'
-import { routes } from 'utils/router'
 import { RegisterModeType } from '..'
 
 interface RegisterLoginProps {
@@ -23,15 +21,12 @@ export const RegisterLogin: React.FC<RegisterLoginProps> = observer(({
     setMode
 }) => {
     const [authState] = useState(AuthStore)
-    const history = useHistory()
     const { register, handleSubmit, formState: { errors } } = useForm()
-
-    console.log(authState, errors)
 
     const onSubmitHandler = (data: LoginData) => {
         console.log(data)
 
-        authState.login(data, () => history.push(routes.main))
+        authState.login(data)
     }
 
     return (

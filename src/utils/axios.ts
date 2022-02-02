@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import { AuthStore } from 'store/auth'
 
 const axios = Axios.create({
     withCredentials: false
@@ -9,7 +10,13 @@ axios.interceptors.response.use(
     async (err) => {
         const originalReq = err.config
 
-        if(err.response.status === 401) console.log('need to refresh token')
+        if(err.response.status === 401) {
+            await AuthStore.refresh()
+
+            originalReq.headers['Authorization'] = axios.defaults.headers.common['Authorization']
+
+            return axios(originalReq)
+        }
         
         return Promise.reject(err)
     }

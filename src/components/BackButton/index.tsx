@@ -1,13 +1,15 @@
 import React from 'react'
 import { Button } from 'antd'
-import { AiOutlineArrowLeft } from 'react-icons/ai'
+import { AiOutlineArrowLeft, AiOutlineClose } from 'react-icons/ai'
 
 interface BackButtonProps {
     onClick?: () => void
+    isIcon?: boolean
 }
 
 export const BackButton: React.FC<BackButtonProps> = ({
-    onClick = () => null
+    onClick = () => null,
+    isIcon = false
 }) => {
     return (
         <Button
@@ -15,13 +17,23 @@ export const BackButton: React.FC<BackButtonProps> = ({
             onClick={onClick}
             style={{ padding: '0 5px' }}
         >
-            <div className='uk-flex uk-flex-middle'>
-                <AiOutlineArrowLeft size={22} />
+            {
+                !isIcon ? (
+                    <div className='uk-flex uk-flex-middle'>
+                        <AiOutlineArrowLeft size={22} />
 
-                &nbsp;
+                        &nbsp;
 
-                Назад
-            </div>
+                        Назад
+                    </div>
+                )
+                : (
+                    <div className='uk-flex uk-flex-middle uk-flex-center'>
+                        <AiOutlineClose size={22} />
+                    </div>
+                )
+            }
+            
         </Button>
     )
 }

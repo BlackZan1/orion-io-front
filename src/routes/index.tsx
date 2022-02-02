@@ -5,7 +5,7 @@ import { Redirect, Route, Switch } from 'react-router'
 import { AuthLayout } from 'layouts/AuthLayout'
 import { MainLayout } from 'layouts/MainLayout'
 
-// containers
+// pages
 import { FeedContainer } from 'pages/Feed'
 import { MembersContainer } from 'pages/Members'
 import { NewsContainer } from 'pages/News'
@@ -93,7 +93,10 @@ export const AppRoutes: React.FC = () => {
                             if(route.withoutUserInfo) props.withoutUserInfo = route.withoutUserInfo
 
                             routeInner = (
-                                <MainLayout { ...props }>
+                                <MainLayout     
+                                    key={route.url} 
+                                    { ...props }
+                                >
                                     <route.component />
                                 </MainLayout>
                             )
@@ -101,7 +104,7 @@ export const AppRoutes: React.FC = () => {
                             break
                         case 'auth':
                             routeInner = (
-                                <AuthLayout>
+                                <AuthLayout key={route.url}>
                                     <route.component />
                                 </AuthLayout>
                             )

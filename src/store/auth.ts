@@ -1,4 +1,4 @@
-import { action, makeAutoObservable } from 'mobx'
+import { action, computed, makeAutoObservable } from 'mobx'
 
 // utils
 import { LoginData } from 'interfaces/auth'
@@ -34,7 +34,7 @@ export class Auth implements AuthStoreState {
     }
 
     @action
-    async login(data: LoginData, cb: Function) {
+    async login(data: LoginData, cb?: Function) {
         this.loaded = false
 
         try {
@@ -47,10 +47,10 @@ export class Auth implements AuthStoreState {
             localStorage.setItem('orion_t', accessToken)
             localStorage.setItem('orion_r-t', refreshToken)
 
-            this.loaded = true
             this.token = accessToken
+            this.loaded = true
 
-            cb()
+            if(cb) cb()
         }
         catch(err) {
             console.log(err)
@@ -75,6 +75,37 @@ export class Auth implements AuthStoreState {
             
             this.auth = false
         }
+    }
+
+    @action
+    async refresh() {
+        try {
+            const token: string = localStorage.getItem('orion_r-t') || ''
+
+            const res = await service.refresh(token)
+
+            console.log(res.data)
+
+            const {
+                accessToken,
+                refreshToken    
+            } = res.data
+
+            localStorage.setItem('orion_t', accessToken)
+            localStorage.setItem('orion_r-t', refreshToken)
+
+            this.me()
+        }
+        catch(err) {
+            console.log(err)
+
+            this.auth = false
+        }
+    }
+
+    @computed
+    get isAdmin(): boolean {
+        return this.user.role.value === 'admin'
     }
 }
 

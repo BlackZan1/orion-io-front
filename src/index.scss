@@ -27,7 +27,7 @@ body {
 }
 
 .fade-in {
-    animation: fadeIn .3s ease;
+    animation: fadeIn .2s ease;
 }
 
 .main-content {
@@ -50,6 +50,14 @@ body {
         display: -webkit-flex;
         right: 30px;
     }
+}
+
+.weight-bold {
+    font-weight: bold;
+}
+
+.weight-600 {
+    font-weight: 600;
 }
 
 @keyframes fadeIn {

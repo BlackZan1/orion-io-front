@@ -7,6 +7,7 @@ import { PreloaderPage } from 'pages/PrealoderPage'
 
 // stores
 import { AuthStore } from 'store/auth'
+import { StudySpaceStore } from 'store/studySpace'
 
 // hooks
 import { useLocaleStorage } from 'hooks/localStorage.hook'
@@ -25,13 +26,20 @@ export const AuthLayout: React.FC<any> = observer(({
 }) => {
     const { value: tokenValue } = useLocaleStorage('orion_t')
     const [authStore] = useState(AuthStore)
+    const [studyStore] = useState(StudySpaceStore)
+
+    const { groups } = studyStore.data
     
     if(authStore.auth === null && !!tokenValue) return <PreloaderPage />
-    if(authStore.auth) return <Redirect to={routes.main} />
+    if(authStore.auth) {
+        const hasGroups = groups.length > 0
+
+        return <Redirect to={hasGroups ? routes.main.replace(':groupId', groups[0].id) : routes.user} />
+    }
 
     return (
         <div className='auth-layout'>
-            <div className='auth-layout__logo'>
+            <div className='auth-layout__logo uk-animation-stroke'>
                 <LogoSVG />
             </div>
 

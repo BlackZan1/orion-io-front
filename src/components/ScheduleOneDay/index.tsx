@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import moment from 'moment'
+
+// components
+import { ScheduleEvent } from './ScheduleEvent'
 
 // styles
 import './ScheduleOneDay.scss'
@@ -12,8 +15,18 @@ interface ClassItem {
     color: string
 }
 
-export const ScheduleOneDay: React.FC<{ classes: ClassItem[] }> = ({
-    classes
+interface ScheduleOneDayProps {
+    classes: ClassItem[]
+    isEditable: boolean
+    setEdit?: (data: any) => void
+    onDelete?: (id: string) => void
+}
+
+export const ScheduleOneDay: React.FC<ScheduleOneDayProps> = memo(({
+    classes,
+    isEditable,
+    setEdit = () => null,
+    onDelete = () => null
 }) => {
     const startDate = 8
     const time = [
@@ -39,13 +52,13 @@ export const ScheduleOneDay: React.FC<{ classes: ClassItem[] }> = ({
     const [items, setItems] = useState<any[]>([])
 
     useEffect(() => {
-        if(items.length) return
+        if(items.length) setItems([])
 
-        classes.forEach((i) => {
-            const startHours = Math.ceil(moment(i.from).hours())
-            const endHours = Math.ceil(moment(i.to).hours())
-            const startMinutes = Math.ceil(moment(i.from).minutes())
-            const endMinutes = Math.ceil(moment(i.to).minutes())
+        classes.forEach((i: any) => {
+            const startHours = Math.ceil(moment(i.startDate).hours())
+            const endHours = Math.ceil(moment(i.endDate).hours())
+            const startMinutes = Math.ceil(moment(i.startDate).minutes())
+            const endMinutes = Math.ceil(moment(i.endDate).minutes())
 
             const distanceTop = (startDate > startHours) ? 0 : startHours - startDate
             const distanceHeight = endHours - startHours
@@ -56,25 +69,6 @@ export const ScheduleOneDay: React.FC<{ classes: ClassItem[] }> = ({
             let height = (distanceHeight * 96) + gap
 
             let yExtra = 0
-
-            // if(endMinutes >= 10) {
-            //     if(endMinutes >= 20) {
-            //         if(endMinutes >= 30) {
-            //             if(endMinutes >= 40) {
-            //                 if(endMinutes >= 50) {
-            //                     height += 96 / (60 / 50)
-            //                 }
-            //                 else height += 96 / (60 / 40) + 10
-            //             }
-            //             else height += 96 / (60 / 30)
-            //         }
-            //         else height += 96 / (60 / 20)
-            //     }
-            //     else height += 96 / (60 / 10)
-            // }
-            // else if(endMinutes >= 5) {
-            //     height += 96 / (60 / 5)
-            // }
 
             for(let x = 1; x <= 60; x++) {
                 if(endMinutes === x) {
@@ -122,32 +116,16 @@ export const ScheduleOneDay: React.FC<{ classes: ClassItem[] }> = ({
 
             {
                 items.map((i, index) => (
-                    <div 
-                        className='schedule-one-day__event' 
+                    <ScheduleEvent
+                        { ...i }
                         key={i.id} 
-                        style={{ 
-                            top: i.y, 
-                            height: i.height,
-                            zIndex: index + 1
-                        }}
-                    >
-                        <div className='schedule-one-day__event__bg' style={{ background: i.color }} />
-
-                        <div className='schedule-one-day__event__content'>
-                            <div className='schedule-one-day__event__content__bar' style={{ background: i.color }} />
-
-                            <span>
-                                { i.title }
-                                ,
-
-                                &nbsp;
-
-                                { i.fullTime }
-                            </span>
-                        </div>
-                    </div>
+                        index={index} 
+                        isEditable={isEditable}
+                        setEdit={() => setEdit(i)}
+                        onDelete={() => onDelete(i.id)}
+                    />
                 ))
             }
         </div>
     )
-}
+})

@@ -12,4 +12,8 @@ export class AuthService extends MainService {
     async me() {
         return initAxios().get(`${this.mainUrl}/api/auth/me`)
     }
+
+    async refresh(refreshToken: string) {
+        return initAxios().post(`${this.mainUrl}/api/auth/refresh`, { refreshToken })
+    }
 }
