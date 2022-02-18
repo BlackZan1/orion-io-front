@@ -5,17 +5,21 @@ import { AiOutlineArrowLeft, AiOutlineClose } from 'react-icons/ai'
 interface BackButtonProps {
     onClick?: () => void
     isIcon?: boolean
+    type?: 'text' | 'ghost'
+    style?: React.CSSProperties
 }
 
 export const BackButton: React.FC<BackButtonProps> = ({
     onClick = () => null,
-    isIcon = false
+    isIcon = false,
+    type = 'text',
+    style = {}
 }) => {
     return (
         <Button
-            type='text'
+            type={type}
             onClick={onClick}
-            style={{ padding: '0 5px' }}
+            style={{ padding: '0 5px', ...style }}
         >
             {
                 !isIcon ? (

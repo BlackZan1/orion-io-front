@@ -13,7 +13,7 @@ axios.interceptors.response.use(
         if(err.response.status === 401) {
             await AuthStore.refresh()
 
-            originalReq.headers['Authorization'] = axios.defaults.headers.common['Authorization']
+            originalReq.headers['Authorization'] = `Bearer ${localStorage.getItem('orion_t')}`
 
             return axios(originalReq)
         }

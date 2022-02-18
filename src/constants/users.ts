@@ -10,6 +10,7 @@ export const EmptyUserData: UserData = {
     middleName: '',
     photo: '',
     photoUrl: '',
+    phone: '',
     role: {},
     studySpace: {},
     createdAt: '',

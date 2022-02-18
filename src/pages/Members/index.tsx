@@ -1,49 +1,92 @@
-import React from 'react'
-import { Table, Tag } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { 
+    Pagination, 
+    Spin, 
+    Table, 
+    Tag 
+} from 'antd'
 import moment from 'moment'
+import { observer } from 'mobx-react'
+import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 
 // components
 import { InfoBlock } from 'components/InfoBlock'
+import { AddButton } from 'components/AddButton'
+
+// hooks
+import { usePageTitle } from 'hooks/pageTitle.hook'
+
+// stores
+import { MembersStore } from 'store/members'
+import { StudySpaceStore } from 'store/studySpace'
+import { AuthStore } from 'store/auth'
+import { RolesStore } from 'store/roles'
+
+// utils
+import { routes } from 'utils/router'
 
 // styles
 import './Members.scss'
 
-const bd = moment()
-    .clone()
-    .set('days', 24)
-    .set('months', 7)
-    .set('years', 2002)
+export const MembersContainer: React.FC = observer(() => {
+    const [membersStore] = useState(MembersStore)
+    const [studyStore] = useState(StudySpaceStore)
+    const [authStore] = useState(AuthStore)
+    const [rolesStore] = useState(RolesStore)
+    const [page, setPage] = useState<number>(1)
+    const [loaded, setLoaded] = useState<boolean>(false)
+    const { rename } = usePageTitle('')
+    const history = useHistory()
 
-export const MembersContainer: React.FC = () => {
+    const { id: groupId } = studyStore.activeGroup
+
+    useEffect(() => {
+        (async () => {
+            await membersStore.getAll(groupId, 1)
+
+            setLoaded(true)
+        })()
+    }, [])
+
+    useEffect(() => {
+        rename(`${studyStore.activeGroup.name} | Участники`)
+    }, [])
+
+    const goToAddMember = () => {
+        history.push(routes.addMember.replace(':groupId', groupId))
+    }
+    
+    const onPageChangeHandler = (newPage: number) => {
+        setPage(newPage)
+
+        membersStore.getAll(groupId, newPage)
+    }
+
     const cols = [
         {
             title: 'ФИО',
-            dataIndex: 'name',
-            key: 'name',
-            render: (name: string, { lastName }: any) => (
-                <p 
+            dataIndex: 'firstName',
+            key: 'firstName',
+            render: (firstName: string, { lastName, middleName, id }: any) => (
+                <Link 
+                    className='uk-text-bold' 
                     style={{ 
-                        width: 200, 
-                        color: 'var(--aqua-color)',
-                        fontWeight: 600
+                        marginBottom: 0, 
+                        color: 'unset', 
+                        width: 250,
+                        display: 'inline-block'
                     }}
+                    to={routes.user.replace(':id', id)}
                 >
                     { lastName }
 
-                    {' '}
+                    &nbsp;
 
-                    { name }
-                </p>
-            )
-        },
-        {
-            title: 'Дата рождения',
-            dataIndex: 'birthDay',
-            key: 'birthDay',
-            render: (birthDay: string) => (
-                <p style={{ width: 135 }}>
-                    { moment(birthDay).format('DD MMMM YYYY') }
-                </p>
+                    { firstName }
+
+                    { middleName ? ` ${middleName}` : '' }
+                </Link>
             )
         },
         {
@@ -52,133 +95,180 @@ export const MembersContainer: React.FC = () => {
             key: 'role',
             render: (role: any) => (
                 <div style={{ width: 100 }}>
+                    <Tag color={role.color}>
+                        { role.name }
+                    </Tag>
+                </div>
+            )
+        },
+        {
+            title: 'Почта',
+            dataIndex: 'email',
+            key: 'email',
+            render: (email: any) => (
+                <a style={{ width: '100%' }} href={`mailto:${email}`}>
+                    { email }
+                </a>
+            )
+        },
+        {
+            title: 'Телефон',
+            dataIndex: 'phone',
+            key: 'phone',
+            render: (phone: any) => (
+                phone ? (
+                    <a style={{ width: '100%' }} href={`tel:${phone}`}>
+                        { phone }
+                    </a>
+                )
+                : (
+                    'Неизвестно'
+                )
+            )
+        },
+        {
+            title: 'Дата рождения',
+            dataIndex: 'birthDay',
+            key: 'birthDay',
+            render: (birthDay: string) => (
+                <p style={{ width: 135 }}>
                     { 
-                        role === 1 ? (
-                            <Tag color='processing'>Куратор</Tag>
-
-                        ) 
+                        birthDay ? (
+                            moment(birthDay).format('DD MMMM YYYY') 
+                        )
                         : (
-                            <Tag color='warning'>Студент</Tag>
+                            'Неизвестно'
                         )
                     }
-                </div>
+                </p>
             )
         },
-        {
-            title: 'О себе',
-            dataIndex: 'about',
-            key: 'about',
-            render: (about: any) => (
-                <div style={{ width: '100%' }}>
-                    { about }
-                </div>
-            )
-        },
-    ]
-
-    const data = [
-        {
-            key: '1',
-            name: 'Жазгуль',
-            lastName: 'Эже',
-            birthDay: bd,
-            role: 1,
-            about: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem quaerat nemo veritatis neque doloribus. Dolores culpa esse possimus repudiandae ab architecto optio corporis ducimus! Atque nostrum unde nesciunt sapiente illo.'
-        },
-        {
-            key: '2',
-            name: 'Назар',
-            lastName: 'Саалиев',
-            birthDay: bd,
-            role: 0,
-            about: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem quaerat nemo veritatis neque doloribus. Dolores culpa esse possimus repudiandae ab architecto optio corporis ducimus! Atque nostrum unde nesciunt sapiente illo.'
-        },
-        {
-            key: '3',
-            name: 'Ариет',
-            lastName: 'Ариет',
-            birthDay: bd,
-            role: 0,
-            about: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem quaerat nemo veritatis neque doloribus. Dolores culpa esse possimus repudiandae ab architecto optio corporis ducimus! Atque nostrum unde nesciunt sapiente illo.'
-        },
-        {
-            key: '4',
-            name: 'Ислам',
-            lastName: 'Панда',
-            birthDay: bd,
-            role: 0,
-            about: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem quaerat nemo veritatis neque doloribus. Dolores culpa esse possimus repudiandae ab architecto optio corporis ducimus! Atque nostrum unde nesciunt sapiente illo.'
-        },
-        {
-            key: '5',
-            name: 'Искендер',
-            lastName: 'Жираф',
-            birthDay: bd,
-            role: 0,
-            about: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem quaerat nemo veritatis neque doloribus. Dolores culpa esse possimus repudiandae ab architecto optio corporis ducimus! Atque nostrum unde nesciunt sapiente illo.'
-        },
-        {
-            key: '6',
-            name: 'Нурдин',
-            lastName: 'Жив',
-            birthDay: bd,
-            role: 0,
-            about: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem quaerat nemo veritatis neque doloribus. Dolores culpa esse possimus repudiandae ab architecto optio corporis ducimus! Atque nostrum unde nesciunt sapiente illo.'
-        }
     ]
 
     return (
         <div>
             <div className='members__grid'>
-                <InfoBlock 
-                    title='Всего участников'
-                    content={(
+                <Spin spinning={!loaded} size='large'>
+                    <InfoBlock 
+                        title='Всего участников:'
+                        style={{ paddingTop: 10, paddingBottom: 10, height: 87 }}
+                    >
                         <div className='members__count'>
-                            18
+                            { membersStore.allCount }
                         </div>
-                    )}
-                />
+                    </InfoBlock>
+                </Spin>
 
-                <InfoBlock 
-                    title={(
-                        <>
-                            <Tag color='warning'>Студент</Tag>
-                        </>
-                    )}
-                    content={(
-                        <div className='members__count'>
-                            16
-                        </div>
-                    )}
-                />
+                <Spin spinning={!loaded} size='large'>
+                    <InfoBlock 
+                        title={null}
+                        style={{ paddingTop: 10, paddingBottom: 10, height: 87 }}
+                    >
+                        <div className='members__card-grid'>
+                            {
+                                rolesStore.user && (
+                                    <div style={{ borderRight: '1px solid var(--grey-3-color)' }}>
+                                        <Tag 
+                                            color={rolesStore.user.color} 
+                                            style={{ marginTop: 5, marginBottom: 10 }}
+                                        >
+                                            { rolesStore.user.name }
+                                        </Tag>
 
-                <InfoBlock 
-                    title={(
-                        <>
-                            <Tag color='processing'>Куратор</Tag>
-                        </>
-                    )}
-                    content={(
-                        <div className='members__count'>
-                            2
+                                        <div className='members__count'>
+                                            {
+                                                membersStore.userCount
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                            }
+
+                            {
+                                rolesStore.superUser && (
+                                    <div style={{ borderRight: '1px solid var(--grey-3-color)' }}>
+                                        <Tag 
+                                            color={rolesStore.superUser.color} 
+                                            style={{ marginTop: 5, marginBottom: 10 }}
+                                        >
+                                            { rolesStore.superUser.name }
+                                        </Tag>
+
+                                        <div className='members__count'>
+                                            {
+                                                membersStore.superUserCount
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                            }
+
+                            {
+                                rolesStore.admin && (
+                                    <div>
+                                        <Tag 
+                                            color={rolesStore.admin.color}
+                                            style={{ marginTop: 5, marginBottom: 10 }}
+                                        >
+                                            { rolesStore.admin.name }
+                                        </Tag>
+
+                                        <div className='members__count'>
+                                            {
+                                                membersStore.adminCount
+                                            }
+                                        </div>
+                                    </div>
+                                )
+                            }
                         </div>
-                    )}
-                />
+                    </InfoBlock>
+                </Spin>
             </div>
 
-            <div className='members__table'>
-                <Table 
-                    columns={cols}
-                    dataSource={data}
-                    showSorterTooltip={false}
-                    pagination={false}
-                    style={{ 
-                        marginTop: 20, 
-                        width: 1300, 
-                        maxWidth: 1300 
-                    }}
-                />
+            <div 
+                className='members__table'
+            >
+                {
+                    authStore.isAdmin && (
+                        <AddButton 
+                            title='Добавить участника'
+                            onClick={goToAddMember}
+                        />
+                    )
+                }
+                
+                <div className='members__table__wrapper'> 
+                    <Spin spinning={!membersStore.loaded} size='large'>
+                        <Table 
+                            columns={cols}
+                            dataSource={membersStore.data}
+                            showSorterTooltip={false}
+                            pagination={false}
+                            bordered
+                            className={`${authStore.isAdmin ? 'is-admin' : ''}`}
+                            style={{ 
+                                width: 1300, 
+                                maxWidth: 1300,
+                            }}
+                        />
+                    </Spin>
+                </div>
+
+                {
+                    loaded && (
+                        <div className='uk-flex-column uk-flex-end'>
+                            <Pagination
+                                current={page}
+                                defaultPageSize={10}
+                                total={membersStore.allCount} 
+                                style={{ marginTop: 20 }}
+                                onChange={onPageChangeHandler}
+                            />
+                        </div>
+                    )
+                }
             </div>
         </div>
     )
-}
+})

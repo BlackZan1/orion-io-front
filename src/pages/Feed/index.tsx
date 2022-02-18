@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Tag } from 'antd'
+import { Empty, Spin, Tag } from 'antd'
 import moment from 'moment'
 import { observer } from 'mobx-react'
 
@@ -13,91 +13,51 @@ import { usePageTitle } from 'hooks/pageTitle.hook'
 
 // utils
 import { fullWeekDays } from 'utils/dates'
+import { randEmoji } from 'utils/emojies'
 
 // stores
 import { AuthStore } from 'store/auth'
 import { ScheduleStore } from 'store/schedule'
 import { StudySpaceStore } from 'store/studySpace'
+import { NewsStore } from 'store/news'
 
 // styles
 import './Feed.scss'
 
+const emoji = randEmoji()
+
 export const FeedContainer: React.FC = observer(() => {
     const [studyStore] = useState(StudySpaceStore)
+    const [newsStore] = useState(NewsStore)
     const [authStore] = useState(AuthStore)
     const [scheduleStore] = useState(ScheduleStore)
     const { rename } = usePageTitle('')
+    const [loaded, setLoaded] = useState<boolean>(false)
 
-    const { schedule: scheduleId } = studyStore.activeGroup
+    const { schedule: scheduleId, id: groupId } = studyStore.activeGroup
 
     useEffect(() => {
         if(scheduleStore.data.id !== scheduleId) {
-            scheduleStore.getById(scheduleId)
+            (async () => {
+                setLoaded(false)
+
+                await scheduleStore.getById(scheduleId)
+
+                setLoaded(true)
+            })()
         }
+        else setLoaded(true)
     }, [scheduleId])
+
+    useEffect(() => {
+        if(newsStore.loaded) return
+
+        newsStore.getAll(groupId)
+    }, [newsStore.loaded])
 
     useEffect(() => {
         rename(`${studyStore.activeGroup.name} | Главная страница`)
     }, [])
-
-    const news = [
-        {
-            id: 1,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 2,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 3,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 4,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 5,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 6,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 7,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 8,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        }
-    ]
 
     const lessons = scheduleStore.loaded ? scheduleStore.lessons : []
     const { user } = authStore
@@ -106,102 +66,141 @@ export const FeedContainer: React.FC = observer(() => {
     const lessonsLength = lessons.length && lessons[weekDayIndex].length
     const currentLesson = lessons[weekDayIndex] || []
 
+    const isAbleToAdd = authStore.isSuperUser || authStore.isAdmin
+
     return (
         <>
             <InfoBlock 
-                title={`🧠 Добро пожаловать, ${user.firstName}!`}
-                content={(
-                    <>
-                        <p>
-                            Сегодня 
-                            
-                            <Tag 
-                                color='success' 
-                                style={{ marginLeft: 4, marginRight: 0, fontSize: 14 }}
-                            >
-                                { moment().format('DD MMMM, ') }
+                title={`${emoji} Добро пожаловать, ${user.firstName}!`}
+            >
+                <p>
+                    Сегодня 
+                    
+                    <Tag 
+                        color='success' 
+                        style={{ marginLeft: 4, marginRight: 0, fontSize: 14 }}
+                    >
+                        { moment().format('D MMMM, ') }
 
-                                { fullWeekDays[weekDayIndex] }
-                            </Tag>
-                        </p>
+                        { fullWeekDays[weekDayIndex] }
+                    </Tag>
+                </p>
 
-                        <p>
-                            У вас по расписанию 
+                <p>
+                    У вас по расписанию 
 
-                            <Tag 
-                                color='processing' 
-                                style={{ marginLeft: 4, marginRight: 2, fontSize: 14 }}
-                            >
-                                { lessonsLength } 
-                                
-                                {' '}
+                    <Tag 
+                        color='processing' 
+                        style={{ marginLeft: 4, marginRight: 2, fontSize: 14 }}
+                    >
+                        { lessonsLength } 
+                        
+                        {' '}
 
-                                занятия
-                            </Tag>
+                        занятия
+                    </Tag>
 
-                            {
-                                !!lessonsLength && (
-                                    <>
-                                        :
+                    {
+                        !!lessonsLength && (
+                            <>
+                                :
 
-                                        &nbsp;
+                                &nbsp;
 
-                                        {
-                                            currentLesson.map((lesson: any, index: number) => (
-                                                <>
-                                                    <Tag 
-                                                        color={lesson.color} 
-                                                        style={{ 
-                                                            marginLeft: 4, 
-                                                            marginRight: 0, 
-                                                            fontSize: 14 
-                                                        }}
-                                                    >
-                                                        { lesson.title }
-                                                    </Tag>
+                                {
+                                    currentLesson.map((lesson: any, index: number) => (
+                                        <>
+                                            <Tag 
+                                                color={lesson.color} 
+                                                style={{ 
+                                                    marginLeft: 4, 
+                                                    marginRight: 0, 
+                                                    fontSize: 14 
+                                                }}
+                                            >
+                                                { lesson.title }
+                                            </Tag>
 
-                                                    {
-                                                        (index + 1) !== lessonsLength && (
-                                                            ', '
-                                                        )
-                                                    }
-                                                </>
-                                            ))
-                                        }
-                                    </>
-                                )
-                            }
-                        </p>
-                    </>
-                )}
-            /> 
+                                            {
+                                                (index + 1) !== lessonsLength && (
+                                                    ', '
+                                                )
+                                            }
+                                        </>
+                                    ))
+                                }
+                            </>
+                        )
+                    }
+                </p>
+            </InfoBlock>
 
             <div className='feed__grid' style={{ marginTop: 20 }}>
-                <InfoBlock 
-                    title='Расписание на сегодня'
-                    withHeader
-                    content={(
+                <Spin spinning={!loaded} size='large'>
+                    <InfoBlock 
+                        title='Расписание на сегодня'
+                        withHeader
+                    >
                         <ScheduleOneDay 
                             classes={currentLesson}
                             isEditable={false}
                         />
-                    )}
-                /> 
+                    </InfoBlock>
+                </Spin>
 
-                <InfoBlock 
-                    title='Недавние новости'
-                    withHeader
-                    bodyStyle={{ padding: 0 }}
-                    content={(
-                        <div style={{ overflowY: 'auto', padding: '20px 20px 10px 20px', maxHeight: 550 }}>
+                <Spin spinning={!newsStore.loaded} size='large'>
+                    <InfoBlock 
+                        title='Недавние новости'
+                        withHeader
+                        bodyStyle={{ padding: 0 }}
+                    >
+                        <div 
+                            className={`${(!newsStore.loaded || !newsStore.data.length) ? 'uk-flex uk-flex-middle uk-flex-center' : ''}`}
+                            style={{ overflowY: 'auto', padding: '20px 20px 10px 20px', height: 550 }}
+                        >
                             {
-                                news.map((i) => (
-                                    <NewsItem { ...i } key={i.id} />
-                                ))
+                                newsStore.data.length ? (
+                                    newsStore.data.map((i) => (
+                                        <NewsItem { ...i } key={i.id} />
+                                    ))
+                                )
+                                : (
+                                    <Empty 
+                                        description={(
+                                            <p>
+                                                {
+                                                    !newsStore.loaded ? (
+                                                        'Загрузка...'
+                                                    )
+                                                    : (
+                                                        <>
+                                                            Новостей нет!
+
+                                                            {
+                                                                isAbleToAdd && (
+                                                                    <>
+                                                                        <br />
+
+                                                                        Вы можете добавить 
+                                                                        новую новость
+
+                                                                        <br />
+                                                                        
+                                                                        в разделе новостей
+                                                                    </>
+                                                                )
+                                                            }
+                                                        </>
+                                                    )
+                                                }
+                                            </p>
+                                        )}
+                                    />
+                                )
                             }
                         </div>
-                    )}
-                />
+                    </InfoBlock>
+                </Spin>
             </div>
         </>
     )

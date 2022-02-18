@@ -11,21 +11,19 @@ import { AuthStore } from 'store/auth'
 
 // utils
 import { LoginData } from 'interfaces/auth'
-import { RegisterModeType } from '..'
+import { SignInModeType } from '..'
 
-interface RegisterLoginProps {
-    setMode: (mode: RegisterModeType) => void
+interface SignInLoginProps {
+    setMode: (mode: SignInModeType) => void
 }
 
-export const RegisterLogin: React.FC<RegisterLoginProps> = observer(({
+export const SignInLogin: React.FC<SignInLoginProps> = observer(({
     setMode
 }) => {
     const [authState] = useState(AuthStore)
-    const { register, handleSubmit, formState: { errors } } = useForm()
+    const { register, handleSubmit } = useForm()
 
     const onSubmitHandler = (data: LoginData) => {
-        console.log(data)
-
         authState.login(data)
     }
 

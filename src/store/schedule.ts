@@ -16,7 +16,7 @@ const days = [
 ]
 
 class Schedule {
-    data: any = []
+    data: any = {}
     loaded = false
 
     constructor() {
@@ -143,6 +143,12 @@ class Schedule {
         }
 
         return all
+    }
+
+    @action
+    reset() {
+        this.data = {}
+        this.loaded = false
     }
 }
 

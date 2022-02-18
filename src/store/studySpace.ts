@@ -1,11 +1,19 @@
 import { EmptyGroup, EmptyStudySpace } from 'constants/studySpace'
 import { GroupData, StudySpaceData } from 'interfaces/studySpace'
-import { action, computed, makeAutoObservable } from 'mobx'
+import { action, makeAutoObservable } from 'mobx'
 
 // services
 import { StudySpaceService } from 'services/StudySpaceService'
+import { GroupService } from 'services/GroupService'
+
+// stores
+import { MembersStore } from './members'
+import { NewsStore } from './news'
+import { TokensStore } from './tokens'
+import { ScheduleStore } from './schedule'
 
 const service = new StudySpaceService()
+const groupService = new GroupService()
 
 interface StudySpaceStoreState {
     data: StudySpaceData
@@ -39,6 +47,15 @@ class StudySpace implements StudySpaceStoreState {
     }
 
     @action
+    setData(data: StudySpaceData) {
+        this.data = data
+
+        if(this.data.groups.length) {
+            this.setActiveGroupId(this.data.groups[0].id)
+        }
+    }
+
+    @action
     setActiveGroupId(id: string) {
         this.activeGroupId = id
     }
@@ -46,6 +63,27 @@ class StudySpace implements StudySpaceStoreState {
     @action
     setActiveGroup(data: GroupData) {
         this.activeGroup = data
+
+        const stores = [
+            MembersStore,
+            NewsStore,
+            TokensStore,
+            ScheduleStore
+        ]
+
+        stores.forEach((store) => store.reset())
+    }
+
+    @action
+    async createGroup(data: any) {
+        try {
+            const res = await groupService.create(data)
+
+            this.data.groups.push(res.data)
+        }
+        catch(err) {
+            console.log(err)
+        }
     }
 }
 

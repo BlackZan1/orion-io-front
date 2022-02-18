@@ -7,7 +7,7 @@ import { usePageTitle } from 'hooks/pageTitle.hook'
 import { Preloader } from 'components/Preloader'
 
 export const PreloaderPage = () => {
-    const { rename } = usePageTitle('IrionIO | ')
+    const { rename } = usePageTitle('OrionIO | ')
 
     useEffect(() => {
         rename('Загружаем...')

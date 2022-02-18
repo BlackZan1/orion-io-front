@@ -4,19 +4,23 @@ import { Redirect, Route, Switch } from 'react-router'
 // layouts
 import { AuthLayout } from 'layouts/AuthLayout'
 import { MainLayout } from 'layouts/MainLayout'
+import { UserLayout } from 'layouts/UserLayout'
 
 // pages
 import { FeedContainer } from 'pages/Feed'
 import { MembersContainer } from 'pages/Members'
 import { NewsContainer } from 'pages/News'
-import { RegisterContainer } from 'pages/Register'
+import { SignInContainer } from 'pages/SignIn'
 import { ScheduleContainer } from 'pages/Schedule'
 import { UserContainer } from 'pages/User'
+import { AddMemberContainer } from 'pages/AddMember'
+import { RegisterContainer } from 'pages/Register'
 
 // utils
 import { routes } from 'utils/router'
+import { GroupSettingsContainer } from 'pages/GroupSettings'
 
-type AppRouteLayout = 'main' | 'auth'
+type AppRouteLayout = 'main' | 'auth' | 'user'
 
 interface AppRoute {
     url: string
@@ -26,6 +30,7 @@ interface AppRoute {
     className?: string,
     title?: string,
     withoutUserInfo?: boolean
+    isGroupName?: boolean
 }
 
 const allRoutes: AppRoute[] = [
@@ -35,6 +40,7 @@ const allRoutes: AppRoute[] = [
         layout: 'main',
         exact: true,
         className: 'feed',
+        isGroupName: true,
         title: 'Главная страница'
     },
     {
@@ -62,15 +68,36 @@ const allRoutes: AppRoute[] = [
         title: 'Участники'
     },
     {
-        url: routes.user,
-        component: UserContainer,
+        url: routes.addMember,
+        component: AddMemberContainer,
         layout: 'main',
         exact: true,
+        className: 'add-member',
+        title: 'Добавить участника'
+    },
+    {
+        url: routes.groupSettings,
+        component: GroupSettingsContainer,
+        layout: 'main',
+        exact: true,
+        className: 'group-settings',
+        title: 'Настройки группы'
+    },
+    {
+        url: routes.user,
+        component: UserContainer,
+        layout: 'user',
+        exact: true,
         className: 'user-page',
-        withoutUserInfo: true
     },
     {
         url: routes.auth.signin,
+        component: SignInContainer,
+        layout: 'auth',
+        exact: true
+    },
+    {
+        url: routes.register,
         component: RegisterContainer,
         layout: 'auth',
         exact: true
@@ -83,14 +110,16 @@ export const AppRoutes: React.FC = () => {
             {
                 allRoutes.map((route) => {
                     let routeInner: React.ReactNode
+                    let props: any = {}
 
                     switch(route.layout) {
                         case 'main':
-                            const props: any = {}
+                            props = {}
 
                             if(route.className) props.className = route.className
                             if(route.title) props.title = route.title
                             if(route.withoutUserInfo) props.withoutUserInfo = route.withoutUserInfo
+                            if(route.isGroupName) props.isGroupName = route.isGroupName
 
                             routeInner = (
                                 <MainLayout     
@@ -99,6 +128,23 @@ export const AppRoutes: React.FC = () => {
                                 >
                                     <route.component />
                                 </MainLayout>
+                            )
+
+                            break
+                        case 'user':
+                            props = {}
+
+                            if(route.className) props.className = route.className
+                            if(route.title) props.title = route.title
+                            if(route.withoutUserInfo) props.withoutUserInfo = route.withoutUserInfo
+
+                            routeInner = (
+                                <UserLayout     
+                                    key={route.url} 
+                                    { ...props }
+                                >
+                                    <route.component />
+                                </UserLayout>
                             )
 
                             break

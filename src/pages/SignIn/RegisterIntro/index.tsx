@@ -2,13 +2,13 @@ import React from 'react'
 import { Button } from 'antd'
 
 // utils
-import { RegisterModeType } from '..'
+import { SignInModeType } from '..'
 
-interface RegisterIntroProps {
-    setMode: (mode: RegisterModeType) => void
+interface SignInIntroProps {
+    setMode: (mode: SignInModeType) => void
 }
 
-export const RegisterIntro: React.FC<RegisterIntroProps> = ({
+export const SignInIntro: React.FC<SignInIntroProps> = ({
     setMode
 }) => {
     return (

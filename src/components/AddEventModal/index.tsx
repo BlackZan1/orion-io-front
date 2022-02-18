@@ -1,5 +1,13 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react'
+import 
+    React, 
+    { 
+        SyntheticEvent, 
+        useEffect, 
+        useState 
+    } 
+from 'react'
 import { 
+    Alert,
     Button,
     Input, 
     Modal, 
@@ -39,19 +47,19 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
         register, 
         handleSubmit, 
         setValue, 
-        watch 
+        formState: { errors },
+        reset
     } = useForm()
     const [day, setDay] = useState<number>(moment().isoWeekday())
-    const [color, setColor] = useState<string>(Colors[0])
+    const [color, setColor] = useState<string>(Colors[0].hex)
     const [dates, setDates] = useState<any>({
         from: null,
         to: null
     })
     const [loaded, setLoaded] = useState<boolean>(true)
+    const [timeError, setTimeError] = useState<null | string>()
 
     const onSubmitHandler = async (data: any) => {
-        setLoaded(false)
-
         const dataToSent: CreateEventData = {
             ...data,
             day,
@@ -61,12 +69,27 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
         const inputFrom: any = document.querySelector('#time-from')
         const inputTo: any = document.querySelector('#time-to')
 
-        if(!dates.from) return inputFrom.focus()
+        if(!dates.from) {
+            setTimeError('Поля обязательны')
+
+            return inputFrom.focus()
+        }
         
+        if(!dates.to) {
+            setTimeError('Поля обязательны')
+
+            return inputTo.focus()
+        }
+
+        if(+dates.from.format('HHmm') > +dates.to.format('HHmm')) {
+            setTimeError('Поле От должно быть меньше До')
+
+            return
+        }
+
+        setLoaded(false)
+
         dataToSent.startDate = dates.from.toISOString()
-
-        if(!dates.to) return inputTo.focus()
-
         dataToSent.endDate = dates.to.toISOString()
 
         if(editData.id) {
@@ -120,12 +143,16 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
             else setDay(moment().isoWeekday())
     
             if(editData.color) setColor(editData.color)
-            else setColor(Colors[0])
+            else setColor(Colors[0].hex)
     
             setDates({
                 from: editData.startDate ? moment(editData.startDate) : null,
                 to: editData.endDate ? moment(editData.endDate) : null
             })
+        }
+
+        return () => {
+            reset()
         }
     }, [editData])
 
@@ -144,6 +171,32 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
 
         setValue(name, value as string)
     }
+
+    const showTitleError = () => {
+        switch(errors.title.type) {
+            case 'minLength':
+                return 'Введите больше 1 символа'
+            case 'maxLength':
+                return 'Введите меньше 30 символов'
+            case 'required':
+                return 'Поле обязательно'
+            default:
+                return null
+        }
+    }
+
+    const showDescError = () => {
+        switch(errors.title.type) {
+            case 'minLength':
+                return 'Введите больше 1 символа'
+            case 'maxLength':
+                return 'Введите меньше 150 символов'
+            case 'required':
+                return 'Поле обязательно'
+            default:
+                return null
+        }
+    }
     
     return (
         <Modal
@@ -153,7 +206,11 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
             footer={null}
             destroyOnClose
         >
-            <div className='uk-flex uk-flex-right'>
+            <div className='uk-flex uk-flex-between'>
+                <p style={{ fontWeight: 'bold' }}>
+                    Добавить событие
+                </p>
+
                 <BackButton 
                     onClick={() => setVisible(false)}
                     isIcon
@@ -162,29 +219,57 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
 
             <form onSubmit={handleSubmit(onSubmitHandler)}>
                 <div className='uk-margin-top'>
-                    <p>Название</p>
+                    <p className={`${errors.title ? 'error-text' : ''}`}>
+                        Название события
+                    </p>
 
                     <Input 
                         style={{ height: 42 }} 
                         placeholder='Введите название' 
                         defaultValue={editData.title}
+                        className={`${errors.title ? 'is-error' : ''}`}
                         maxLength={30}
-                        { ...register('title', { required: true, minLength: 1, maxLength: 30 }) }
+                        { ...register('title', { required: true, maxLength: 30 }) }
                         onChange={onInputChangeHandler}
                     />
+
+                    {
+                        errors.title && (
+                            <Alert
+                                className='uk-margin-small-top'
+                                showIcon
+                                type='error'
+                                message={showTitleError()}
+                            />
+                        )
+                    }
                 </div>
 
                 <div className='uk-margin-top'>
-                    <p>Описание</p>
+                    <p className={`${errors.description ? 'error-text' : ''}`}>
+                        Описание события
+                    </p>
 
                     <Input 
                         style={{ height: 42 }} 
                         placeholder='Введите описание'
                         defaultValue={editData.description}
                         maxLength={150}
-                        { ...register('description', { required: true, minLength: 1, maxLength: 150 }) }
+                        className={`${errors.description ? 'is-error' : ''}`}
+                        { ...register('description', { required: true, maxLength: 150 }) }
                         onChange={onInputChangeHandler} 
                     />
+
+                    {
+                        errors.description && (
+                            <Alert
+                                className='uk-margin-small-top'
+                                showIcon
+                                type='error'
+                                message={showDescError()}
+                            />
+                        )
+                    }
                 </div>
 
                 <div className='uk-margin-top uk-flex uk-flex-between'>
@@ -208,7 +293,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
                     </div>
 
                     <div className='uk-width-1-2 uk-margin-left'>
-                        <p>Цвет</p>
+                        <p>Цвет отображения</p>
 
                         <Select
                             className='uk-width-1'
@@ -217,9 +302,9 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
                         >
                             {
                                 Colors.map((colorItem, index) => (
-                                    <Select.Option key={index} value={colorItem}>
-                                        <Tag color={colorItem} className='uk-width-1'>
-                                            { colorItem }
+                                    <Select.Option key={index} value={colorItem.hex}>
+                                        <Tag color={colorItem.hex} className='uk-width-1'>
+                                            { colorItem.name }
                                         </Tag>
                                     </Select.Option>
                                 ))
@@ -229,7 +314,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
                 </div>
 
                 <div className='uk-margin-top uk-margin-large-bottom'>
-                    <div className='uk-flex uk-flex-between'>
+                    <div className={`uk-flex uk-flex-between ${!!timeError ? 'error-text' : ''}`}>
                         <p style={{ width: '40%' }}>От</p>
 
                         <p style={{ width: '40%' }}>До</p>
@@ -238,20 +323,45 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
                     <div className='uk-flex uk-flex-between'>
                         <TimePicker 
                             style={{ height: 42, width: '40%' }} 
-                            onChange={(value) => onTimeChangeHandler('from', value)}
                             id='time-from'
                             value={dates.from}
+                            showSecond={false}
+                            showNow={false}
+                            className={`${!!timeError ? 'is-error' : ''}`}
+                            onSelect={(value) => onTimeChangeHandler('from', value)}
+                            format='HH:mm'
+                            disabledHours={() => (
+                                [0, 1, 2, 3, 4, 5, 6, 7, 17, 18, 19, 20, 21, 22, 23]
+                            )}
                         />
 
                         <AiOutlineSwap size={22} />
                         
                         <TimePicker 
                             style={{ height: 42, width: '40%' }} 
-                            onChange={(value) => onTimeChangeHandler('to', value)}
                             id='time-to'
                             value={dates.to}
+                            showSecond={false}
+                            showNow={false}
+                            className={`${!!timeError ? 'is-error' : ''}`}
+                            onSelect={(value) => onTimeChangeHandler('to', value)}
+                            format='HH:mm'
+                            disabledHours={() => (
+                                [0, 1, 2, 3, 4, 5, 6, 7, 17, 18, 19, 20, 21, 22, 23]
+                            )}
                         />
                     </div>
+
+                    {
+                        !!timeError && (
+                            <Alert
+                                className='uk-margin-small-top'
+                                showIcon
+                                type='error'
+                                message={timeError}
+                            />
+                        )
+                    }
                 </div>
 
                 <div className='uk-margin-large-top uk-flex uk-flex-center'>

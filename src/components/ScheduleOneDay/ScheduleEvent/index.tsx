@@ -39,7 +39,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
                 />
 
                 <span className='weight-600'>
-                    Редактировать
+                    Изменить событие
                 </span>
             </div>
 
@@ -54,7 +54,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
                 />
 
                 <span className='weight-600' style={{ color: 'crimson' }}>
-                    Удалить
+                    Удалить событие
                 </span>
             </div>
         </div>

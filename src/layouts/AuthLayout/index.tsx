@@ -29,7 +29,7 @@ export const AuthLayout: React.FC<any> = observer(({
     const [studyStore] = useState(StudySpaceStore)
 
     const { groups } = studyStore.data
-    
+
     if(authStore.auth === null && !!tokenValue) return <PreloaderPage />
     if(authStore.auth) {
         const hasGroups = groups.length > 0
@@ -43,7 +43,7 @@ export const AuthLayout: React.FC<any> = observer(({
                 <LogoSVG />
             </div>
 
-            <div className='auth-layout__content'>
+            <div className='auth-layout__content uk-margin-medium-bottom'>
                 { children }
             </div>
         </div>

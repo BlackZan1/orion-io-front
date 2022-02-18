@@ -27,7 +27,7 @@ export const UserInfo: React.FC = observer(() => {
     return (
         <div 
             className='user-info' 
-            onClick={() => history.push(routes.user.replace(':id', '1'))}
+            onClick={() => history.push(routes.user.replace(':id', authStore.user.id))}
         >
             <div>
                 <p>
@@ -43,7 +43,7 @@ export const UserInfo: React.FC = observer(() => {
                 </Tag>
             </div>
 
-            <Avatar size={42} src={authStore.user.photoUrl} />
+            <Avatar size={42} src={photoUrl} />
         </div>
     )
 })

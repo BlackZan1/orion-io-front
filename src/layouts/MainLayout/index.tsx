@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Redirect, useParams } from 'react-router'
 import { observer } from 'mobx-react'
 
@@ -9,27 +9,31 @@ import { PreloaderPage } from 'pages/PrealoderPage'
 
 // stores
 import { AuthStore } from 'store/auth'
+import { StudySpaceStore } from 'store/studySpace'
 
 // hooks
 import { useLocaleStorage } from 'hooks/localStorage.hook'
 
 // utils
 import { routes } from 'utils/router'
-import { StudySpaceStore } from 'store/studySpace'
-import { GroupData } from 'interfaces/studySpace'
 
 export const MainLayout: React.FC<any> = observer(({
     children,
     className,
     title,
-    withoutUserInfo
+    withoutUserInfo,
+    isGroupName
 }) => {
     const { groupId } = useParams<any>()
     const { value: tokenValue } = useLocaleStorage('orion_t')
     const [authStore] = useState(AuthStore)
     const [studyStore] = useState(StudySpaceStore)
 
-    if(authStore.auth === null && !!tokenValue) return <PreloaderPage />
+    if(authStore.auth === null) {
+        if(!!tokenValue) return <PreloaderPage />
+
+        return <Redirect to={routes.auth.signin} />
+    }
     if(authStore.auth === false) return <Redirect to={routes.auth.signin} />
 
     const currentGroup = studyStore.data.groups.find((i) => i.id === groupId)
@@ -40,7 +44,13 @@ export const MainLayout: React.FC<any> = observer(({
                 <Sidebar />
 
                 <div className='main-content'>
-                    <h1>Нет доступа к данной группе либо ее не существует</h1>
+                    <h2>
+                        Нет доступа к данной группе
+                        
+                        <br />
+
+                        либо ее не существует
+                    </h2>
                 </div>
             </div>
         )
@@ -48,6 +58,7 @@ export const MainLayout: React.FC<any> = observer(({
     
     if(studyStore.activeGroup.id !== currentGroup.id) {
         studyStore.setActiveGroup(currentGroup)
+        studyStore.setActiveGroupId(currentGroup.id)
     }
 
     return (
@@ -66,9 +77,18 @@ export const MainLayout: React.FC<any> = observer(({
                 }
 
                 {
-                    title && (
+                    (title || isGroupName) && (
                         <div className='main-content__title'>
-                            <p>{ title }</p>
+                            <p>
+                                { 
+                                    isGroupName ? (
+                                        studyStore.activeGroup.name
+                                    ) 
+                                    : (
+                                        title
+                                    )
+                                }
+                            </p>
                         </div>
                     )
                 }

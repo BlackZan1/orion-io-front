@@ -1,95 +1,102 @@
-import React from 'react'
-import { Button, DatePicker } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { observer } from 'mobx-react'
+import { Empty, Spin } from 'antd'
+
+// hooks
+import { usePageTitle } from 'hooks/pageTitle.hook'
+
+// stores
+import { NewsStore } from 'store/news'
+import { StudySpaceStore } from 'store/studySpace'
+import { AuthStore } from 'store/auth'
 
 // components
 import { NewsItem } from 'components/NewsItem'
+import { AddButton } from 'components/AddButton'
+import { AddNewsModal } from 'components/AddNewsModal'
 
 // styles
 import './News.scss'
 
-export const NewsContainer: React.FC = () => {
-    const news = [
-        {
-            id: 1,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 2,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 3,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 4,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 5,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 6,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 7,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        },
-        {
-            id: 8,
-            text: 'Открываю доступ к сессии за осенний семестр',
-            photo: 'https://zvuch.com/img/collections/340290_large.jpg',
-            name: 'Жазгуль',
-            lastName: 'Эже'
-        }
-    ]
+export const NewsContainer: React.FC = observer(() => {
+    const [newsStore] = useState(NewsStore)
+    const [authStore] = useState(AuthStore)
+    const [studyStore] = useState(StudySpaceStore)
+    const { rename } = usePageTitle('')
+
+    const [modal, setModal] = useState<boolean>(false)
+
+    const { id: groupId, name: groupName } = studyStore.activeGroup
+
+    useEffect(() => {
+        newsStore.getAll(groupId)
+    }, [])
+
+    useEffect(() => {
+        rename(`${groupName} | Новости`)
+    }, [])
+
+    const isAbleToAdd = authStore.isAdmin || authStore.isSuperUser
 
     return (
-        <div className='news-block'>
-            <div className='news-block__btns'>
-                <Button type='primary' style={{ height: 42, marginRight: 10 }}>
-                    Сегодня
-                </Button>
+        <div className={`news-block ${isAbleToAdd ? '' : 'is-not-admin'}`}>
+            {
+                isAbleToAdd && (
+                    <div className='news-block__btns'>
+                        <AddButton 
+                            title='Добавить новость'
+                            onClick={() => setModal(true)}
+                        />
+                    </div>
+                )
+            }
 
-                <Button type='ghost' style={{ height: 42, marginRight: 10 }}>
-                    Вчера
-                </Button>
+            <Spin spinning={!newsStore.loaded} size='large'>
+                <div 
+                    className={`news-block__list ${!newsStore.data.length ? 'uk-flex uk-flex-center uk-flex-middle' : ''}`}
+                >
+                    {
+                        newsStore.data.length ? (
+                            newsStore.data.map((i) => (
+                                <NewsItem { ...i } key={i.id} />
+                            ))
+                        )
+                        : (
+                            <Empty 
+                                description={(
+                                    <p>
+                                        {
+                                            !newsStore.loaded ? (
+                                                'Загрузка...'
+                                            )
+                                            : (
+                                                <>
+                                                    Новостей нет!
 
-                <DatePicker 
-                    style={{ height: 42 }}
-                />
-            </div>
+                                                    {
+                                                        isAbleToAdd && (
+                                                            <>
+                                                                <br />
 
-            <div className='news-block__list'>
-                {
-                    news.map((i) => (
-                        <NewsItem { ...i } key={i.id} />
-                    ))
-                }
-            </div>
+                                                                Вы можете добавить новую новость
+                                                            </>
+                                                        )
+                                                    }
+                                                </>
+                                            )
+                                        }
+                                    </p>
+                                )}
+                            />
+                        )
+                    }
+                </div>
+            </Spin>
+
+            <AddNewsModal 
+                visible={modal}
+                setVisible={setModal}
+            />
         </div>
     )
-}
+})

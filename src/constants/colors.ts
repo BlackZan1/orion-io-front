@@ -1,8 +1,8 @@
 export const Colors = [
-    '#f78080',
-    '#2de27f',
-    '#3d6dff',
-    '#ff6fea',
-    '#70ffca',
-    '#33dd7a'
+    { hex: '#fa8072', name: 'salmon' },
+    { hex: '#ff69b4', name: 'hot pink' },
+    { hex: '#1e90ff', name: 'dodger blue' },
+    { hex: '#da70d6', name: 'orchid' },
+    { hex: '#008080', name: 'teal' },
+    { hex: '#f0e68c', name: 'khaki' }
 ]

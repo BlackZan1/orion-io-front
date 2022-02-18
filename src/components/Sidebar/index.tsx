@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { observer } from 'mobx-react'
+import { Button } from 'antd'
+import { AiOutlinePlus, AiOutlineSetting } from 'react-icons/ai'
+
+// components
+import { AddGroupModal } from 'components/AddGroupModal'
 
 // stores
 import { StudySpaceStore } from 'store/studySpace'
+import { AuthStore } from 'store/auth'
 
 // assets
 import { ReactComponent as LogoSVG } from 'assets/logo.svg'
@@ -15,9 +21,13 @@ import './Sidebar.scss'
 
 export const Sidebar: React.FC = observer(() => {
     const [studyStore] = useState(StudySpaceStore)
+    const [authStore] = useState(AuthStore)
+
+    const [modal, setModal] = useState<boolean>(false)
 
     const { groups } = studyStore.data
     const { activeGroupId } = studyStore
+    const { id: selectedGroupId } = studyStore.activeGroup
 
     const setActiveGroupId = (id: string) => studyStore.setActiveGroupId(id)
 
@@ -31,19 +41,63 @@ export const Sidebar: React.FC = observer(() => {
                 </span>
             </div>
 
-            {
-                groups && groups.map((group: any) => {
-                    const isSimilar = group.id === activeGroupId
+            <div 
+                className='main-sidebar__list'
+                style={{ height: authStore.isAdmin ? 'calc(100vh - 120px - 80px)' : 'calc(100vh - 80px)' }}
+            >
+                {
+                    groups && groups.map((group: any) => {
+                        const isSimilar = group.id === activeGroupId
+                        const isActive = group.id === selectedGroupId
 
-                    return (
-                        <SidebarItem 
-                            key={group.id} 
-                            { ...group } 
-                            isOpen={isSimilar}
-                            setOpen={() => setActiveGroupId(isSimilar ? '' : group.id)}
+                        return (
+                            <SidebarItem 
+                                key={group.id} 
+                                { ...group } 
+                                isActive={isActive}
+                                isOpen={isSimilar}
+                                isAdmin={authStore.isAdmin}
+                                setOpen={() => setActiveGroupId(isSimilar ? '' : group.id)}
+                            />
+                        )
+                    })
+                }
+            </div>
+
+            {
+                authStore.isAdmin && (
+                    <>
+                        <div className='main-sidebar__end'>
+                            <Button 
+                                type='ghost'
+                                style={{ height: 36, fontSize: 14, width: '100%' }}
+                                onClick={() => setModal(true)}
+                            >
+                                <div className='uk-flex uk-flex-middle'>
+                                    <AiOutlinePlus size={22} className='uk-margin-small-right' />
+
+                                    Добавить группу
+                                </div>
+                            </Button>
+
+                            <Button 
+                                type='ghost'
+                                style={{ height: 36, fontSize: 14, width: '100%' }}
+                            >
+                                <div className='uk-flex uk-flex-middle'>
+                                    <AiOutlineSetting size={22} className='uk-margin-small-right' />
+
+                                    Настройки
+                                </div>
+                            </Button>
+                        </div>
+
+                        <AddGroupModal
+                            visible={modal}
+                            setVisible={setModal}
                         />
-                    )
-                })
+                    </>
+                )
             }
         </aside>
     )

@@ -8,6 +8,7 @@ export interface UserData {
     middleName: string | null
     photo: string | null
     photoUrl: string
+    phone: string
     role: any
     studySpace: any
     createdAt: string
