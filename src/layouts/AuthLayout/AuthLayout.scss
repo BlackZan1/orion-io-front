@@ -30,3 +30,11 @@
         }
     }
 }
+
+@media (max-width: 510px) {
+    .auth-layout {
+        &__content {
+            width: calc(100% - 20px);
+        }
+    }
+}

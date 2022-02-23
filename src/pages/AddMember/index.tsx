@@ -72,12 +72,13 @@ export const AddMemberContainer: React.FC = observer(() => {
                 title={(
                     <div className='uk-flex uk-flex-between uk-flex-middle'>
                         <Popover
-                            placement='topLeft'
+                            style={{ width: 300 }}
+                            placement='top'
                             content={(
                                 <div className='uk-flex uk-flex-column'>
                                     <p
                                         style={{ fontSize: 16 }}
-                                        className='uk-margin-bottom uk-text-bold'
+                                        className='uk-margin-bottom uk-text-middle uk-text-bold'
                                     >
                                         Выберите роль для регистрации:
                                     </p>

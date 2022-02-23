@@ -1,8 +1,15 @@
-import React from 'react'
-import { AiOutlineDown, AiOutlineSchedule, AiOutlineSetting } from 'react-icons/ai'
+import React, { useState } from 'react'
+import { 
+    AiOutlineDown, 
+    AiOutlineSchedule, 
+    AiOutlineSetting,
+    AiOutlineEdit,
+    AiOutlineDelete
+} from 'react-icons/ai'
 import { BiHome, BiNews } from 'react-icons/bi'
 import { FiUserPlus, FiUsers } from 'react-icons/fi'
 import { useHistory } from 'react-router'
+import { Popover, Button, Popconfirm } from 'antd'
 
 // utils
 import { routes } from 'utils/router'
@@ -11,7 +18,9 @@ interface SidebarItemProps {
     isAdmin: boolean
     isOpen: boolean
     isActive: boolean
+    deleting: boolean
     setOpen: () => void
+    onDelete: () => void
     name: string
     id: string
 }
@@ -20,11 +29,14 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
     isAdmin,
     isOpen,
     isActive,
+    deleting,
     setOpen,
     name,
-    id
+    id,
+    onDelete
 }) => {
     const history = useHistory()
+    const [settings, setSettings] = useState<boolean>(false)
 
     const { location: { pathname } } = history
 
@@ -37,7 +49,10 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
 
                 <AiOutlineDown 
                     size={22} 
-                    style={{ transform: `rotate(${isOpen ? 0 : 180}deg)`, transition: 'all .4s ease' }}
+                    style={{ 
+                        transform: `rotate(${isOpen ? 0 : 180}deg)`, 
+                        transition: 'all .4s ease'
+                    }}
                     className='main-sidebar__item__title__icon' 
                     onClick={setOpen}
                 />
@@ -80,7 +95,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
 
                 <div
                     onClick={() => history.push(routes.members.replace(':groupId', id))} 
-                    className={`${isActive && pathname.includes('members') ? 'is-active' : ''}`}
+                    className={`${isActive && pathname.includes('member') ? 'is-active' : ''}`}
                 >
                     <FiUsers className='is-stroke-svg' color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
 
@@ -89,14 +104,91 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
 
                 {
                     isAdmin && (
-                        <div
-                            onClick={() => history.push(routes.groupSettings.replace(':groupId', id))} 
-                            className={`${isActive && pathname.includes('settings') ? 'is-active' : ''}`}
-                        >
-                            <AiOutlineSetting color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
+                        <Popover
+                            overlayClassName='with-arrow'
+                            placement='right'
+                            onVisibleChange={(v) => setSettings(v)}
+                            trigger='click'
+                            overlayInnerStyle={{ width: 240 }}
+                            content={(
+                                <div className='uk-flex uk-flex-column'>
+                                    <Button
+                                        type='ghost'
+                                        className='uk-margin-small-bottom'
+                                        style={{ 
+                                            height: 36, 
+                                            background: 'var(--white-color)'
+                                        }}
+                                    >
+                                        <div className='uk-flex uk-flex-middle uk-text-small'>
+                                            <AiOutlineEdit size={22} />
 
-                            <span>Настройки</span>
-                        </div>
+                                            &nbsp;
+
+                                            Переименовать
+                                        </div>
+                                    </Button>
+
+                                    <Button
+                                        type='ghost'
+                                        className='uk-margin-small-bottom'
+                                        style={{ 
+                                            height: 36, 
+                                            background: 'var(--white-color)'
+                                        }}
+                                        onClick={() => history.push(routes.addMember.replace(':groupId', id))} 
+                                    >
+                                        <div className='uk-flex uk-flex-middle uk-text-small'>
+                                            <FiUserPlus size={22} />
+
+                                            &nbsp;
+
+                                            Добавить участника
+                                        </div>
+                                    </Button>
+
+                                    <hr style={{ margin: '0 0 10px 0' }} />
+
+                                    <Popconfirm
+                                        placement='bottomRight'
+                                        title='Вы действительно хотите удалить эту группу?'
+                                        okText='Да'
+                                        cancelText='Нет'
+                                        onConfirm={onDelete}
+                                    >
+                                        <Button
+                                            type='ghost'
+                                            className='is-error'
+                                            style={{ 
+                                                height: 36, 
+                                                background: 'var(--white-color)'
+                                            }}
+                                            loading={deleting}
+                                        >
+                                            <div className='uk-flex uk-flex-middle error-text uk-text-small'>
+                                                <AiOutlineDelete
+                                                    size={22} 
+                                                    color='crimson' 
+                                                />
+
+                                                &nbsp;
+
+                                                Удалить
+                                            </div>
+                                        </Button>
+                                    </Popconfirm>
+                                </div>
+                            )}
+                        >
+                            <div
+                                onClick={() => setSettings(true)} 
+                                className={`${settings ? 'is-active' : ''}`}
+                            >
+                                <AiOutlineSetting color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
+
+                                <span>Настройки</span>
+                            </div>
+                        </Popover>
                     )
                 }
             </div>

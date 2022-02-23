@@ -9,6 +9,10 @@ export class GroupService extends MainService {
         return initAxios().post(`${this.mainUrl}/api/groups`, data)
     }
 
+    async delete(groupId: string) {
+        return initAxios().delete(`${this.mainUrl}/api/groups/${groupId}`)
+    }
+
     async getTokens(id: string) {
         return initAxios().get(`${this.mainUrl}/api/groups/${id}/tokens`)
     }

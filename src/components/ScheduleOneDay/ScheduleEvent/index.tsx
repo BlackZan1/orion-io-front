@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dropdown, Menu, Popover } from 'antd'
+import { Button, Popover } from 'antd'
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai'
 
 interface ScheduleEventProps {
@@ -28,35 +28,45 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     onDelete
 }) => {
     const menu = (
-        <div>
-            <div 
-                className='ant-dropdown-menu-item uk-flex uk-flex-middle uk-margin-small-bottom'
+        <div className='uk-flex uk-flex-column'>
+            <Button
+                type='ghost'
+                className='uk-margin-small-bottom'
+                style={{ 
+                    height: 36, 
+                    background: 'var(--white-color)'
+                }}
                 onClick={setEdit}
             >
-                <AiOutlineEdit 
-                    size={22} 
-                    className='uk-margin-small-right' 
-                />
+                <div className='uk-flex uk-flex-middle'>
+                    <AiOutlineEdit size={22} />
 
-                <span className='weight-600'>
+                    &nbsp;
+
                     Изменить событие
-                </span>
-            </div>
+                </div>
+            </Button>
 
-            <div 
-                className='ant-dropdown-menu-item uk-flex uk-flex-middle'
+            <Button
+                type='ghost'
+                className='is-error'
+                style={{ 
+                    height: 36, 
+                    background: 'var(--white-color)'
+                }}
                 onClick={onDelete}
             >
-                <AiOutlineDelete 
-                    size={22} 
-                    color='crimson' 
-                    className='uk-margin-small-right'
-                />
+                <div className='uk-flex uk-flex-middle error-text uk-text-small'>
+                    <AiOutlineDelete
+                        size={22} 
+                        color='crimson' 
+                    />
 
-                <span className='weight-600' style={{ color: 'crimson' }}>
+                    &nbsp;
+
                     Удалить событие
-                </span>
-            </div>
+                </div>
+            </Button>
         </div>
     )
 
@@ -106,7 +116,6 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
             <Popover
                 content={menu}
                 placement='topRight'
-                arrowContent={(<div />)}
                 trigger='click'
                 overlayStyle={{ paddingRight: 10 }}
             >

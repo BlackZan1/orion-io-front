@@ -24,6 +24,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "prefer-destructuring": ["error", {"object": true, "array": false}],
         "no-extra-boolean-cast": "off",
         "no-case-declarations": "off",
         "no-await-in-loop": "off",

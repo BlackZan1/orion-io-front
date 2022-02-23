@@ -69,3 +69,27 @@
         }
     }
 }
+
+@media (max-width: 600px) {
+    .schedule-one-day {
+        &__item span {
+            font-size: 10px;
+            top: -8px;
+            left: -4px;
+            width: 48px;
+        }
+
+        &__event {
+            width: calc(100% - 55px);
+            left: 55px;
+        }
+    }
+}
+
+@media (max-width: 450px) {
+    .schedule-one-day {
+        &__event__content {
+            font-size: 12px;
+        }
+    }
+}

@@ -2,9 +2,13 @@ import React from 'react'
 import { Tag } from 'antd'
 import Avatar from 'antd/lib/avatar/avatar'
 import moment from 'moment'
+import { useHistory } from 'react-router'
 
 // interfaces
 import { NewsData } from 'interfaces/news'
+
+// utils
+import { routes } from 'utils/router'
 
 // styles
 import './NewsItem.scss'
@@ -19,15 +23,27 @@ export const NewsItem: React.FC<NewsItemProps> = ({
     details,
     createAt
 }) => {
+    const history = useHistory()
+
     let date = moment(createAt).fromNow()
     date = date[0].toUpperCase() + date.slice(1)
 
     return (
         <div className='news-item'>
-            <div className='news-item__user-info'>
-                <Avatar size={32} src={author.photoUrl} />
+            <div 
+                className='news-item__user-info' 
+                onClick={() => history.push(routes.user.replace(':id', author.id))}
+            >
+                <Avatar 
+                    size={32} 
+                    src={author.photoUrl} 
+                    style={{ cursor: 'pointer' }}
+                />
 
-                <p className='uk-flex uk-flex-middle'>
+                <p 
+                    className='uk-flex uk-flex-middle'
+                    style={{ cursor: 'pointer' }}
+                >
                     <span>{ author.firstName }</span>
 
                     <span>{ author.lastName }</span>

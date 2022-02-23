@@ -35,6 +35,12 @@
     }
 }
 
+.with-arrow {
+    .ant-popover-arrow {
+        display: initial;
+    }
+}
+
 .ant-popover {
     z-index: 999;
 
@@ -57,12 +63,18 @@
 .ant-btn, 
 .ant-picker, 
 .ant-input-affix-wrapper,
-.ant-select-selector {
+.ant-select-selector,
+.ant-select-dropdown,
+.ant-picker-dropdown {
     border-radius: 7px !important;
 
     &.is-error {
         border-color: crimson;
     }
+}
+
+.ant-select-dropdown {
+    padding: 0;
 }
 
 .ant-select {
@@ -129,4 +141,12 @@
 
 p {
     margin-bottom: 10px;
+}
+
+@media (max-width: 510px) {
+    .with-arrow {
+        .ant-popover-arrow {
+            display: none;
+        }
+    }
 }

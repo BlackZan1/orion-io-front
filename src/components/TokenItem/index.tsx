@@ -52,7 +52,12 @@ export const TokenItem: React.FC<TokenItemProps> = observer(({
                     className='token-item__content uk-flex uk-flex-middle'
                     onClick={copyToClipboard}
                 >
-                    <AiOutlineLink size={22} />
+                    <div 
+                        className='uk-flex uk-flex-center uk-flex-middle' 
+                        style={{ width: 22, height: 22 }}
+                    >
+                        <AiOutlineLink size={22} />
+                    </div>
 
                     {
                         currentRole && (
@@ -65,7 +70,7 @@ export const TokenItem: React.FC<TokenItemProps> = observer(({
                         )
                     }
 
-                    <span>
+                    <span className='uk-text-small'>
                         { token }
                     </span>
                 </div>

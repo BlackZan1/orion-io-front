@@ -16,6 +16,7 @@ import { useLocaleStorage } from 'hooks/localStorage.hook'
 
 // utils
 import { routes } from 'utils/router'
+import { Result } from 'antd'
 
 export const MainLayout: React.FC<any> = observer(({
     children,
@@ -39,18 +40,19 @@ export const MainLayout: React.FC<any> = observer(({
     const currentGroup = studyStore.data.groups.find((i) => i.id === groupId)
 
     if(!currentGroup) {
+        document.title = 'OrionIO | Нет доступа к группе'
+
         return (
             <div className={className}>
                 <Sidebar />
 
                 <div className='main-content'>
-                    <h2>
-                        Нет доступа к данной группе
-                        
-                        <br />
-
-                        либо ее не существует
-                    </h2>
+                    <Result
+                        className='uk-margin-top'
+                        status='404'
+                        title={studyStore.isEmpty ? 'Нет групп в системе' : 'Нет доступа к данной группe'}
+                        subTitle={studyStore.isEmpty ? 'Вы можете добавить новую' : 'либо ее не существует' }
+                    />
                 </div>
             </div>
         )

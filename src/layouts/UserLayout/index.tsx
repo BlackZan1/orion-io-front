@@ -39,59 +39,15 @@ export const UserLayout: React.FC<any> = observer(({
             <Sidebar />
 
             <div className='main-content'>
-                {
-                    isOwn ? (
-                        <div 
-                            className='main-content__header uk-flex uk-flex-middle'
-                            style={{ height: 78 }}
-                        >
-                            <Button
-                                type='ghost'
-                                style={{ 
-                                    height: 42, 
-                                    background: 'var(--white-color)',
-                                    margin: '0 10px'
-                                }}
-                            >
-                                <div className='uk-flex uk-flex-middle'>
-                                    <AiOutlineEdit size={22} />
-
-                                    &nbsp;
-
-                                    Изменить
-                                </div>
-                            </Button>
-
-                            <Popconfirm
-                                placement='bottomRight'
-                                title='Вы действительно хотите выйты?'
-                                okText='Да'
-                                cancelText='Нет'
-                                onConfirm={() => authStore.logout()}
-                            >
-                                <Button
-                                    type='ghost'
-                                    style={{ height: 42, background: 'var(--white-color)' }}
-                                >
-                                    <div className='uk-flex uk-flex-middle'>
-                                        <MdOutlineLogout size={22} />
-
-                                        &nbsp;
-
-                                        Выйти
-                                    </div>
-                                </Button>
-                            </Popconfirm>
-                        </div>
-                    )
-                    : (
-                        <div className='main-content__header'>
-                            <UserInfo />
-                        </div>
-                    )
-                }
+                <div className='is-mobile'>
+                    <div 
+                        className='main-content__header uk-flex uk-flex-middle'
+                    >
+                        <UserInfo />
+                    </div>
+                </div>
                         
-                <div className='main-content__title'>
+                <div className='main-content__title uk-flex uk-flex-middle uk-flex-between'>
                     <BackButton 
                         onClick={() => history.goBack()}
                         type='ghost'
@@ -101,6 +57,53 @@ export const UserLayout: React.FC<any> = observer(({
                             padding: '0 15px' 
                         }}
                     />
+
+                    {
+                        isOwn && (
+                            <div 
+                                className='uk-flex uk-flex-middle'
+                                style={{ height: 78 }}
+                            >
+                                <Button
+                                    type='ghost'
+                                    style={{ 
+                                        height: 42, 
+                                        background: 'var(--white-color)',
+                                        margin: '0 10px'
+                                    }}
+                                >
+                                    <div className='uk-flex uk-flex-middle'>
+                                        <AiOutlineEdit size={22} />
+
+                                        &nbsp;
+
+                                        Изменить
+                                    </div>
+                                </Button>
+
+                                <Popconfirm
+                                    placement='bottomRight'
+                                    title='Вы действительно хотите выйты?'
+                                    okText='Да'
+                                    cancelText='Нет'
+                                    onConfirm={() => authStore.logout()}
+                                >
+                                    <Button
+                                        type='ghost'
+                                        style={{ height: 42, background: 'var(--white-color)' }}
+                                    >
+                                        <div className='uk-flex uk-flex-middle'>
+                                            <MdOutlineLogout size={22} />
+
+                                            &nbsp;
+
+                                            Выйти
+                                        </div>
+                                    </Button>
+                                </Popconfirm>
+                            </div>
+                        )
+                    }
                 </div>
 
                 <div>

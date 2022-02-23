@@ -78,7 +78,7 @@ export const ScheduleContainer: React.FC = observer(() => {
                 <Tabs 
                     defaultActiveKey={moment().isoWeekday().toString()}
                     type='card' 
-                    size='large'
+                    size='middle'
                     className={`${!isLoaded ? '' : 'uk-margin-top'} ${authStore.isAdmin ? 'is-admin' : ''}`}
                 >
                     {

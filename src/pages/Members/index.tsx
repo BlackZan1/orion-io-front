@@ -42,12 +42,18 @@ export const MembersContainer: React.FC = observer(() => {
     const { id: groupId } = studyStore.activeGroup
 
     useEffect(() => {
+        if(membersStore.loaded) {
+            setLoaded(true)
+
+            return 
+        }
+
         (async () => {
             await membersStore.getAll(groupId, 1)
 
             setLoaded(true)
         })()
-    }, [])
+    }, [loaded, membersStore.loaded])
 
     useEffect(() => {
         rename(`${studyStore.activeGroup.name} | Участники`)

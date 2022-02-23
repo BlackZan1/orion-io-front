@@ -292,8 +292,8 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
                         </Select>
                     </div>
 
-                    <div className='uk-width-1-2 uk-margin-left'>
-                        <p>Цвет отображения</p>
+                    <div className='uk-margin-left' style={{ width: 220 }}>
+                        <p>Цвет</p>
 
                         <Select
                             className='uk-width-1'

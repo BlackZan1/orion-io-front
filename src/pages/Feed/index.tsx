@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Empty, Spin, Tag } from 'antd'
+import { 
+    Empty, 
+    Spin, 
+    Tabs, 
+    Tag 
+} from 'antd'
 import moment from 'moment'
 import { observer } from 'mobx-react'
 
@@ -25,6 +30,8 @@ import { NewsStore } from 'store/news'
 import './Feed.scss'
 
 const emoji = randEmoji()
+
+const { TabPane } = Tabs
 
 export const FeedContainer: React.FC = observer(() => {
     const [studyStore] = useState(StudySpaceStore)
@@ -202,6 +209,81 @@ export const FeedContainer: React.FC = observer(() => {
                     </InfoBlock>
                 </Spin>
             </div>
+
+            <Spin
+                spinning={!loaded || !newsStore.loaded}
+                size='large'
+            >
+                <Tabs
+                    defaultActiveKey='1'
+                    type='card'
+                    size='middle'
+                    className='feed__tabs'
+                >
+                    <TabPane 
+                        tab='Расписание' 
+                        key='1'
+                        style={{ padding: 0 }}
+                    >
+                        <ScheduleOneDay 
+                            classes={currentLesson}
+                            isEditable={false}
+                        />
+                    </TabPane>
+
+                    <TabPane 
+                        tab='Новости' 
+                        key='2'
+                        style={{ padding: 0 }}
+                    >
+                        <div 
+                            className={`${(!newsStore.loaded || !newsStore.data.length) ? 'uk-flex uk-flex-middle uk-flex-center' : ''}`}
+                            style={{ overflowY: 'auto', height: 550 }}
+                        >
+                            {
+                                newsStore.data.length ? (
+                                    newsStore.data.map((i) => (
+                                        <NewsItem { ...i } key={i.id} />
+                                    ))
+                                )
+                                : (
+                                    <Empty 
+                                        description={(
+                                            <p>
+                                                {
+                                                    !newsStore.loaded ? (
+                                                        'Загрузка...'
+                                                    )
+                                                    : (
+                                                        <>
+                                                            Новостей нет!
+
+                                                            {
+                                                                isAbleToAdd && (
+                                                                    <>
+                                                                        <br />
+
+                                                                        Вы можете добавить 
+                                                                        новую новость
+
+                                                                        <br />
+                                                                        
+                                                                        в разделе новостей
+                                                                    </>
+                                                                )
+                                                            }
+                                                        </>
+                                                    )
+                                                }
+                                            </p>
+                                        )}
+                                    />
+                                )
+                            }
+                        </div>
+                    </TabPane>
+                </Tabs>
+            </Spin>
         </>
     )
 })

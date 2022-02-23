@@ -43,3 +43,15 @@
         font-weight: 400;
     }
 }
+
+@media (max-width: 650px) {
+    .info-block {
+        &__title {
+            font-size: 16px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+    }
+}

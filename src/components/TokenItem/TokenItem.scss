@@ -41,3 +41,19 @@
         }
     }
 }
+
+@media (max-width: 650px) {
+    .token-item {
+        padding: 10px 15px;
+
+        &__content {
+            .ant-tag {
+                margin-left: 0px !important;
+            }
+
+            & > div {
+                display: none;
+            }
+        }
+    }
+}

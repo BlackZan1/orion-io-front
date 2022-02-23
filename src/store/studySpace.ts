@@ -1,6 +1,6 @@
 import { EmptyGroup, EmptyStudySpace } from 'constants/studySpace'
 import { GroupData, StudySpaceData } from 'interfaces/studySpace'
-import { action, makeAutoObservable } from 'mobx'
+import { action, computed, makeAutoObservable } from 'mobx'
 
 // services
 import { StudySpaceService } from 'services/StudySpaceService'
@@ -84,6 +84,27 @@ class StudySpace implements StudySpaceStoreState {
         catch(err) {
             console.log(err)
         }
+    }
+
+    @action
+    async deleteGroup(groupId: string) {
+        try {
+            const res = await groupService.delete(groupId)
+
+            console.log(res.data)
+
+            this.data.groups = [ ...this.data.groups ].filter((i) => i.id !== groupId)
+            this.activeGroup = this.data.groups[0]
+            this.activeGroupId = this.data.groups[0].id
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @computed
+    get isEmpty() {
+        return this.data.groups.length <= 0
     }
 }
 

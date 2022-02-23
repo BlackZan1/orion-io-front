@@ -42,3 +42,12 @@
         }
     }
 }
+
+@media (max-width: 600px) {
+    .schedule-tabs  {
+        .ant-tabs .ant-tabs-content {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    }
+}
