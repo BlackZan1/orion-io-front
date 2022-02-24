@@ -13,7 +13,7 @@
 
     &__content {
         width: 420px;
-        min-height: 500px;
+        min-height: 55vh;
         box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.1);
         background: var(--white-color);
         border-radius: 12px;
@@ -35,6 +35,14 @@
     .auth-layout {
         &__content {
             width: calc(100% - 20px);
+        }
+    }
+}
+
+@media (max-width: 1020px) {
+    .auth-layout {
+        &__logo > svg {
+            margin-top: 1.5rem;
         }
     }
 }

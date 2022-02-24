@@ -210,80 +210,85 @@ export const FeedContainer: React.FC = observer(() => {
                 </Spin>
             </div>
 
-            <Spin
-                spinning={!loaded || !newsStore.loaded}
-                size='large'
-            >
-                <Tabs
-                    defaultActiveKey='1'
-                    type='card'
-                    size='middle'
-                    className='feed__tabs'
+            <div style={{ position: 'relative' }}>
+                <p className='feed__tabs-title'>
+                    На сегодня
+                </p>
+
+                <Spin
+                    spinning={!loaded || !newsStore.loaded}
+                    size='large'
                 >
-                    <TabPane 
-                        tab='Расписание' 
-                        key='1'
-                        style={{ padding: 0 }}
+                    <Tabs
+                        defaultActiveKey='1'
+                        type='card'
+                        size='middle'
+                        className='feed__tabs'
                     >
-                        <ScheduleOneDay 
-                            classes={currentLesson}
-                            isEditable={false}
-                        />
-                    </TabPane>
-
-                    <TabPane 
-                        tab='Новости' 
-                        key='2'
-                        style={{ padding: 0 }}
-                    >
-                        <div 
-                            className={`${(!newsStore.loaded || !newsStore.data.length) ? 'uk-flex uk-flex-middle uk-flex-center' : ''}`}
-                            style={{ overflowY: 'auto', height: 550 }}
+                        <TabPane 
+                            tab='Расписание' 
+                            key='1'
+                            style={{ padding: 0 }}
                         >
-                            {
-                                newsStore.data.length ? (
-                                    newsStore.data.map((i) => (
-                                        <NewsItem { ...i } key={i.id} />
-                                    ))
-                                )
-                                : (
-                                    <Empty 
-                                        description={(
-                                            <p>
-                                                {
-                                                    !newsStore.loaded ? (
-                                                        'Загрузка...'
-                                                    )
-                                                    : (
-                                                        <>
-                                                            Новостей нет!
+                            <ScheduleOneDay 
+                                classes={currentLesson}
+                                isEditable={false}
+                            />
+                        </TabPane>
 
-                                                            {
-                                                                isAbleToAdd && (
-                                                                    <>
-                                                                        <br />
+                        <TabPane 
+                            tab='Новости' 
+                            key='2'
+                            style={{ padding: 0 }}
+                        >
+                            <div 
+                                className={`${(!newsStore.loaded || !newsStore.data.length) ? 'uk-flex uk-flex-middle uk-flex-center' : ''}`}
+                            >
+                                {
+                                    newsStore.data.length ? (
+                                        newsStore.data.map((i) => (
+                                            <NewsItem { ...i } key={i.id} />
+                                        ))
+                                    )
+                                    : (
+                                        <Empty 
+                                            description={(
+                                                <p>
+                                                    {
+                                                        !newsStore.loaded ? (
+                                                            'Загрузка...'
+                                                        )
+                                                        : (
+                                                            <>
+                                                                Новостей нет!
 
-                                                                        Вы можете добавить 
-                                                                        новую новость
+                                                                {
+                                                                    isAbleToAdd && (
+                                                                        <>
+                                                                            <br />
 
-                                                                        <br />
-                                                                        
-                                                                        в разделе новостей
-                                                                    </>
-                                                                )
-                                                            }
-                                                        </>
-                                                    )
-                                                }
-                                            </p>
-                                        )}
-                                    />
-                                )
-                            }
-                        </div>
-                    </TabPane>
-                </Tabs>
-            </Spin>
+                                                                            Вы можете добавить 
+                                                                            новую новость
+
+                                                                            <br />
+                                                                            
+                                                                            в разделе новостей
+                                                                        </>
+                                                                    )
+                                                                }
+                                                            </>
+                                                        )
+                                                    }
+                                                </p>
+                                            )}
+                                        />
+                                    )
+                                }
+                            </div>
+                        </TabPane>
+                    </Tabs>
+                </Spin>
+            </div>
         </>
     )
 })
