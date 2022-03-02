@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import { Button, notification } from 'antd'
 import { AiOutlineMenu, AiOutlinePlus, AiOutlineSetting } from 'react-icons/ai'
@@ -13,6 +14,9 @@ import { AuthStore } from 'store/auth'
 // assets
 import { ReactComponent as LogoSVG } from 'assets/logo.svg'
 
+// utils
+import { routes } from 'utils/router'
+
 // components
 import { SidebarItem } from './SidebarItem'
 
@@ -20,6 +24,8 @@ import { SidebarItem } from './SidebarItem'
 import './Sidebar.scss'
 
 export const Sidebar: React.FC = observer(() => {
+    const history = useHistory()
+
     const [studyStore] = useState(StudySpaceStore)
     const [authStore] = useState(AuthStore)
 
@@ -101,6 +107,7 @@ export const Sidebar: React.FC = observer(() => {
                                 <Button 
                                     type='ghost'
                                     style={{ height: 36, fontSize: 14, width: '100%' }}
+                                    onClick={() => history.push(routes.studySpace.settings)}
                                 >
                                     <div className='uk-flex uk-flex-middle'>
                                         <AiOutlineSetting size={22} className='uk-margin-small-right' />

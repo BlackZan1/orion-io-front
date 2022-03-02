@@ -254,8 +254,8 @@ export const MembersContainer: React.FC = observer(() => {
                             bordered
                             className={`${authStore.isAdmin ? 'is-admin' : ''}`}
                             style={{ 
-                                width: 1300, 
-                                maxWidth: 1300,
+                                minWidth: 1300,
+                                maxWidth: '100%'
                             }}
                         />
                     </Spin>

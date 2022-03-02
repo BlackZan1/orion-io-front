@@ -92,7 +92,7 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
             destroyOnClose
         >
             <div className='uk-flex uk-flex-between'>
-                <p style={{ fontWeight: 'bold' }}>
+                <p className='modal-title' style={{ fontWeight: 'bold' }}>
                     Добавить новость
                 </p>
 
@@ -106,6 +106,8 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
                 <div className='uk-margin-top'>
                     <p className={`${errors.title ? 'error-text' : ''}`}>
                         Название новости
+
+                        <span>*</span>
                     </p>
 
                     <Input
@@ -132,6 +134,8 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
                 <div className='uk-margin-top'>
                     <p className={`${errors.details ? 'error-text' : ''}`}>
                         Описание новости
+
+                        <span>*</span>
                     </p>
 
                     <Input.TextArea

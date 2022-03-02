@@ -7,6 +7,10 @@ export const routes = {
     groupSettings: '/:groupId/settings',
     user: '/user/:id',
     register: '/register',
+    studySpace: {
+        settings: '/study-space/settings',
+        main: '/study-space'
+    },
     auth: {
         signin: '/signin'
     }

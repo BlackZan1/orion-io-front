@@ -10,6 +10,8 @@ import { AppRoutes } from 'routes'
 // stores
 import { AuthStore } from 'store/auth'
 import { RolesStore } from 'store/roles'
+import { AuditoriesStore } from 'store/auditories'
+import { LessonsStore } from 'store/lessons'
 
 // hooks
 import { useLocaleStorage } from 'hooks/localStorage.hook'
@@ -25,6 +27,9 @@ moment.locale('ru')
 export const App = observer(() => {
     const [authStore] = useState(AuthStore)
     const [rolesStore] = useState(RolesStore)
+    const [auditoriesStore] = useState(AuditoriesStore)
+    const [lessonsStore] = useState(LessonsStore)
+
     const { value: tokenValue } = useLocaleStorage('orion_t')
 
     useEffect(() => {
@@ -32,7 +37,9 @@ export const App = observer(() => {
             await rolesStore.getAll()   
             
             if(!!tokenValue) {
-                authStore.me()    
+                await authStore.me()
+                await auditoriesStore.getAll()
+                await lessonsStore.getAll()
             }
             else authStore.auth = false
         })()

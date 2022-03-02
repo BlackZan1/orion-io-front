@@ -5,6 +5,7 @@ import { Redirect, Route, Switch } from 'react-router'
 import { AuthLayout } from 'layouts/AuthLayout'
 import { MainLayout } from 'layouts/MainLayout'
 import { UserLayout } from 'layouts/UserLayout'
+import { StudySpaceLayout } from 'layouts/StudySpaceLayout'
 
 // pages
 import { FeedContainer } from 'pages/Feed'
@@ -15,12 +16,13 @@ import { ScheduleContainer } from 'pages/Schedule'
 import { UserContainer } from 'pages/User'
 import { AddMemberContainer } from 'pages/AddMember'
 import { RegisterContainer } from 'pages/Register'
+import { SettingsContainer } from 'pages/Settings'
 
 // utils
 import { routes } from 'utils/router'
-import { GroupSettingsContainer } from 'pages/GroupSettings'
+import { MainPageContainer } from 'pages/Main'
 
-type AppRouteLayout = 'main' | 'auth' | 'user'
+type AppRouteLayout = 'main' | 'auth' | 'user' | 'studySpace'
 
 interface AppRoute {
     url: string
@@ -31,6 +33,7 @@ interface AppRoute {
     title?: string,
     withoutUserInfo?: boolean
     isGroupName?: boolean
+    isStudySpaceName?: boolean
 }
 
 const allRoutes: AppRoute[] = [
@@ -76,12 +79,20 @@ const allRoutes: AppRoute[] = [
         title: 'Добавить участника'
     },
     {
-        url: routes.groupSettings,
-        component: GroupSettingsContainer,
-        layout: 'main',
+        url: routes.studySpace.main,
+        component: MainPageContainer,
+        layout: 'studySpace',
         exact: true,
-        className: 'group-settings',
-        title: 'Настройки группы'
+        className: 'main',
+        isStudySpaceName: true
+    },
+    {
+        url: routes.studySpace.settings,
+        component: SettingsContainer,
+        layout: 'studySpace',
+        exact: true,
+        className: 'main-settings',
+        title: 'Настройки'
     },
     {
         url: routes.user,
@@ -128,6 +139,23 @@ export const AppRoutes: React.FC = () => {
                                 >
                                     <route.component />
                                 </MainLayout>
+                            )
+
+                            break
+                        case 'studySpace':
+                            props = {}
+
+                            if(route.className) props.className = route.className
+                            if(route.title) props.title = route.title
+                            if(route.isStudySpaceName) props.isStudySpaceName = true
+
+                            routeInner = (
+                                <StudySpaceLayout  
+                                    key={route.url} 
+                                    { ...props }
+                                >
+                                    <route.component />
+                                </StudySpaceLayout>
                             )
 
                             break

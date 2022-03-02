@@ -49,6 +49,7 @@ export class Auth implements AuthStoreState {
             localStorage.setItem('orion_r-t', refreshToken)
 
             this.token = accessToken
+            this.errors.login = false
 
             if(cb) cb()
         }
