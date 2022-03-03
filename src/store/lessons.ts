@@ -23,6 +23,30 @@ export class Lessons {
             console.log(err)
         }
     }
+
+    @action
+    async search(value: string) {
+        try {   
+            const res = await service.getLessons(value)
+
+            this.data = res.data.result
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
+    async create(data: any) {
+        try {   
+            const res = await service.createLesson(data)
+
+            this.data.push(res.data)
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
 }
 
 export const LessonsStore = new Lessons()

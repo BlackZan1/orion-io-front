@@ -23,6 +23,30 @@ export class Auditories {
             console.log(err)
         }
     }
+
+    @action
+    async search(value: string) {
+        try {   
+            const res = await service.getAuditories(value)
+
+            this.data = res.data.result
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
+    async create(data: any) {
+        try {   
+            const res = await service.createAuditory(data)
+
+            this.data.push(res.data)
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
 }
 
 export const AuditoriesStore = new Auditories()

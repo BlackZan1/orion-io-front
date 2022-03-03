@@ -1,4 +1,6 @@
 import Axios from 'axios'
+
+// stores
 import { AuthStore } from 'store/auth'
 
 const axios = Axios.create({

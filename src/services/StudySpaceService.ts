@@ -19,6 +19,13 @@ export class StudySpaceService extends MainService {
         )
     }
 
+    async createAuditory(data: any) {
+        return initAxios().post(
+            `${this.mainUrl}/api/auditories`, 
+            data
+        )
+    }
+
     async getLessons(search?: string) {
         return initAxios().get(
             `${this.mainUrl}/api/lessons`, 
@@ -27,6 +34,13 @@ export class StudySpaceService extends MainService {
                     q: search
                 }
             }
+        )
+    }
+
+    async createLesson(data: any) {
+        return initAxios().post(
+            `${this.mainUrl}/api/lessons`, 
+            data
         )
     }
 }
