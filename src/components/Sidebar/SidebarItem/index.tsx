@@ -103,7 +103,10 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
                     <span>Участники</span>
                 </div>
 
-                <div>
+                <div
+                    onClick={() => history.push(routes.lessons.replace(':groupId', id))} 
+                    className={`${isActive && pathname.includes('lessons') ? 'is-active' : ''}`}
+                >
                     <AiOutlineFolderOpen color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
 
                     <span>Занятия</span>

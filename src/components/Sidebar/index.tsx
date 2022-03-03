@@ -46,9 +46,19 @@ export const Sidebar: React.FC = observer(() => {
 
         setLoading(false)
 
+        if(studyStore.data.groups.length) {
+            const firstGroup = studyStore.data.groups[0]
+
+            setActiveGroupId(firstGroup.id)
+            studyStore.setActiveGroup(firstGroup)
+
+            history.push(routes.main.replace(':groupId', firstGroup.id))
+        }
+        else history.push(routes.studySpace.main)
+
         notification.success({
             message: 'Успешно удаленно!',
-            description: 'Вы можете снова добавить новую группу попозже.'
+            description: 'Вы можете снова добавить новую группу.'
         })
     }
 

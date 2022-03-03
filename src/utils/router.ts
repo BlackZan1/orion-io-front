@@ -5,6 +5,7 @@ export const routes = {
     schedule: '/:groupId/schedule',
     addMember: '/:groupId/add-member',
     groupSettings: '/:groupId/settings',
+    lessons: '/:groupId/lessons',
     user: '/user/:id',
     register: '/register',
     studySpace: {

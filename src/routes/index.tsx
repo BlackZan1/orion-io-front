@@ -17,10 +17,11 @@ import { UserContainer } from 'pages/User'
 import { AddMemberContainer } from 'pages/AddMember'
 import { RegisterContainer } from 'pages/Register'
 import { SettingsContainer } from 'pages/Settings'
+import { MainPageContainer } from 'pages/Main'
+import { LessonsContainer } from 'pages/Lessons'
 
 // utils
 import { routes } from 'utils/router'
-import { MainPageContainer } from 'pages/Main'
 
 type AppRouteLayout = 'main' | 'auth' | 'user' | 'studySpace'
 
@@ -77,6 +78,14 @@ const allRoutes: AppRoute[] = [
         exact: true,
         className: 'add-member',
         title: 'Добавить участника'
+    },
+    {
+        url: routes.lessons,
+        component: LessonsContainer,
+        layout: 'main',
+        exact: true,
+        className: 'lessons',
+        title: 'Занятия'
     },
     {
         url: routes.studySpace.main,
