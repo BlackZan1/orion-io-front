@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Tabs } from 'antd'
+import { notification, Result, Tabs } from 'antd'
 import { observer } from 'mobx-react'
 
 // hooks
@@ -24,6 +24,8 @@ export const SettingsContainer: React.FC = observer(() => {
     const [auditoryModal, setAuditoryModal] = useState<boolean>(false)
     const [lessonModal, setLessonModal] = useState<boolean>(false)
 
+    const [editData, setEditData] = useState<any>({})
+
     const { rename } = usePageTitle('OrionIO | ')
 
     const isMobile = window.innerWidth <= 1020
@@ -39,6 +41,11 @@ export const SettingsContainer: React.FC = observer(() => {
         cb()
     }
 
+    const onDelete = (id: string, name: 'auditories' | 'lessons') => {
+        if(name === 'auditories') auditoriesStore.delete(id)
+        else if(name === 'lessons') lessonsStore.delete(id)
+    }
+
     const reload = (name: 'auditories' | 'lessons') => {
         if(name === 'auditories') auditoriesStore.getAll()
         else if(name === 'lessons') lessonsStore.getAll()
@@ -49,28 +56,55 @@ export const SettingsContainer: React.FC = observer(() => {
             <Tabs 
                 tabPosition={ isMobile ? 'top' : 'left' }
                 defaultActiveKey='1'
-                className={ isMobile ? 'uk-margin-top' : 'uk-margin-medium-top'}
                 style={{ minHeight: 'calc(100vh - 40px - 118px)' }}
             >
                 <Tabs.TabPane key='1' tab='Основные'>
-
+                    <Result 
+                        status='403' 
+                        title='Скоро добавим!' 
+                        subTitle='Вы можете связаться с нами, контакты указаны на главной странице' 
+                    />
                 </Tabs.TabPane>
 
-                <Tabs.TabPane key='2' tab='Аудитории'>
+                <Tabs.TabPane key='2' tab='Методисты'>
+                    <Result 
+                        status='403' 
+                        title='Скоро добавим!' 
+                        subTitle='Вы можете связаться с нами, контакты указаны на главной странице' 
+                    />
+                </Tabs.TabPane>
+
+                <Tabs.TabPane key='3' tab='Аудитории'>
                     <SettingsPane 
                         data={auditoriesStore.data}
                         onSearch={(value, cb) => onSearch(value, 'auditories', cb)}
                         reload={() => reload('auditories')}
-                        onAdd={() => setAuditoryModal(true)}
+                        onDelete={(id) => onDelete(id, 'auditories')}
+                        onAdd={() => {
+                            setEditData({})
+                            setAuditoryModal(true)
+                        }}
+                        setEditData={(data) => {
+                            setEditData(data)
+                            setAuditoryModal(true)
+                        }}
                     />
                 </Tabs.TabPane>
 
-                <Tabs.TabPane key='3' tab='Дисциплины'>
+                <Tabs.TabPane key='4' tab='Дисциплины'>
                     <SettingsPane 
                         data={lessonsStore.data}
                         onSearch={(value, cb) => onSearch(value, 'lessons', cb)}
                         reload={() => reload('lessons')}
-                        onAdd={() => setLessonModal(true)}
+                        onDelete={(id) => onDelete(id, 'lessons')}
+                        onAdd={() => {
+                            setEditData({})
+                            setLessonModal(true)
+                        }}
+                        setEditData={(data) => {
+                            setEditData(data)
+                            setLessonModal(true)
+                        }}
                     />
                 </Tabs.TabPane>
             </Tabs>
@@ -78,11 +112,13 @@ export const SettingsContainer: React.FC = observer(() => {
             <AddAuditoryModal 
                 visible={auditoryModal}
                 setVisible={setAuditoryModal}
+                editData={editData}
             />
 
             <AddLessonModal 
                 visible={lessonModal}
                 setVisible={setLessonModal}
+                editData={editData}
             />
         </div>
     )

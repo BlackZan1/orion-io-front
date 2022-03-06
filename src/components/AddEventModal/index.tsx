@@ -208,7 +208,16 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
         >
             <div className='uk-flex uk-flex-between'>
                 <p style={{ fontWeight: 'bold' }}>
-                    Добавить событие
+                    {
+                        !editData.id ? (
+                            'Добавить '
+                        )
+                        : (
+                            'Изменить '
+                        )
+                    } 
+                    
+                    событие
                 </p>
 
                 <BackButton 

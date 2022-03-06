@@ -51,8 +51,29 @@ export const AddLessonModal: React.FC<AddLessonModalProps> = observer(({
     const [color, setColor] = useState<string>(Colors[0].hex)
 
     useEffect(() => {
+        if(editData.id) {
+            const fields = [
+                'name',
+                'details'
+            ]
+    
+            fields.forEach((field) => {
+                setValue(
+                    field,
+                    editData[field], 
+                    {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    }
+                )
+            })
+
+            if(editData.color) setColor(editData.color)
+            else setColor(Colors[0].hex)
+        }
+
         return () => reset()
-    }, [])
+    }, [editData])
 
     const onSubmitHandler = async (data: any) => {
         const dataToSent = {
@@ -61,17 +82,28 @@ export const AddLessonModal: React.FC<AddLessonModalProps> = observer(({
         }
 
         setLoaded(false)
-        
-        await lessonsStore.create(dataToSent)
 
+        if(editData.id) {
+            await lessonsStore.update(editData.id, dataToSent)
+
+            notification.success({
+                message: 'Успешно обновлено!',
+                description: 'Дисциплина будет доступна для использования.',
+                duration: 2
+            })
+        }
+        else {
+            await lessonsStore.create(dataToSent)
+
+            notification.success({
+                message: 'Успешно добавлено!',
+                description: 'Дисциплина будет доступна для использования.',
+                duration: 2
+            })
+        }
+        
         setLoaded(true)
         setVisible(false)
-
-        notification.success({
-            message: 'Успешно добавлено!',
-            description: 'Дисциплина будет доступна для использования.',
-            duration: 2
-        })
     }
 
     const onInputChangeHandler = (ev: SyntheticEvent<any>) => {
@@ -114,7 +146,16 @@ export const AddLessonModal: React.FC<AddLessonModalProps> = observer(({
         >
             <div className='uk-flex uk-flex-between'>
                 <p style={{ fontWeight: 'bold' }}>
-                    Добавить дисциплину
+                    {
+                        !editData.id ? (
+                            'Добавить '
+                        )
+                        : (
+                            'Изменить '
+                        )
+                    } 
+                    
+                    дисциплину
                 </p>
 
                 <BackButton

@@ -3,6 +3,7 @@ import {
     Divider, 
     Empty, 
     Input, 
+    Popconfirm, 
     Spin 
 } from 'antd'
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai'
@@ -15,13 +16,17 @@ interface SettingsPaneProps {
     onSearch: (value: string, cb: Function) => void
     reload: () => void
     onAdd: () => void
+    setEditData: (data: any) => void
+    onDelete: (id: string) => void
 }
 
 export const SettingsPane: React.FC<SettingsPaneProps> = ({
     data,
     onSearch,
     reload,
-    onAdd
+    onAdd,
+    setEditData,
+    onDelete
 }) => {
     const [value, setValue] = useState<string>('')
     const [timer, setTimer] = useState<any>()
@@ -74,18 +79,38 @@ export const SettingsPane: React.FC<SettingsPaneProps> = ({
                                     className='main-settings__content__item uk-flex uk-flex-middle' 
                                     key={i}
                                 >
-                                    <span>
+                                    {
+                                        item.color && (
+                                            <div 
+                                                className='main-settings__content__item__color' 
+                                                style={{ backgroundColor: item.color }}
+                                            />
+                                        )
+                                    }
+
+                                    <span style={{ width: item.color ? 'calc(100% - 70px - 32px)' : '' }}>
                                         { item.name }
                                     </span>
 
                                     <div className='main-settings__content__item__icons uk-flex uk-flex-middle'>
-                                        <div className='main-settings__content__item__icon'>
+                                        <div 
+                                            className='main-settings__content__item__icon'
+                                            onClick={() => setEditData(item)}
+                                        >
                                             <AiOutlineEdit size={22} />
                                         </div>
 
-                                        <div className='main-settings__content__item__icon'>
-                                            <AiOutlineDelete size={22} color='crimson' />
-                                        </div>
+                                        <Popconfirm
+                                            placement='topRight'
+                                            title='Вы действительно хотите удалить?'
+                                            okText='Да'
+                                            cancelText='Нет'
+                                            onConfirm={() => onDelete(item.id)}
+                                        >
+                                            <div className='main-settings__content__item__icon'>
+                                                <AiOutlineDelete size={22} color='crimson' />
+                                            </div>
+                                        </Popconfirm>
                                     </div>
                                 </div>
                             ))

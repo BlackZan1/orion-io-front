@@ -26,6 +26,17 @@ export class StudySpaceService extends MainService {
         )
     }
 
+    async updateAuditory(id: string, data: any) {
+        return initAxios().patch(
+            `${this.mainUrl}/api/auditories/${id}`, 
+            data
+        )
+    }
+
+    async deleteAuditory(id: string) {
+        return initAxios().delete(`${this.mainUrl}/api/auditories/${id}`)
+    }
+
     async getLessons(search?: string) {
         return initAxios().get(
             `${this.mainUrl}/api/lessons`, 
@@ -42,5 +53,16 @@ export class StudySpaceService extends MainService {
             `${this.mainUrl}/api/lessons`, 
             data
         )
+    }
+
+    async updateLesson(id: string, data: any) {
+        return initAxios().patch(
+            `${this.mainUrl}/api/lessons/${id}`, 
+            data
+        )
+    }
+
+    async deleteLesson(id: string) {
+        return initAxios().delete(`${this.mainUrl}/api/lessons/${id}`)
     }
 }

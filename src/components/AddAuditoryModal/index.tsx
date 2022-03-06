@@ -45,22 +45,51 @@ export const AddAuditoryModal: React.FC<AddAuditoryModalProps> = observer(({
     const [loaded, setLoaded] = useState<boolean>(true)
 
     useEffect(() => {
+        if(editData.id) {
+            const fields = [
+                'name',
+                'building'
+            ]
+
+            fields.forEach((field) => {
+                setValue(
+                    field,
+                    editData[field], 
+                    {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    }
+                )
+            })
+        }
+
         return () => reset()
-    }, [])
+    }, [editData])
 
     const onSubmitHandler = async (data: any) => {
         setLoaded(false)
-        
-        await auditoriesStore.create(data)
+
+        if(editData.id) {
+            await auditoriesStore.update(editData.id, data)    
+
+            notification.success({
+                message: 'Успешно обновлено!',
+                description: 'Аудитория будет доступна для использования.',
+                duration: 2
+            })
+        }
+        else {
+            await auditoriesStore.create(data)
+
+            notification.success({
+                message: 'Успешно добавлено!',
+                description: 'Аудитория будет доступна для использования.',
+                duration: 2
+            })
+        }
 
         setLoaded(true)
         setVisible(false)
-
-        notification.success({
-            message: 'Успешно добавлено!',
-            description: 'Аудитория будет доступна для использования.',
-            duration: 2
-        })
     }
 
     const onInputChangeHandler = (ev: SyntheticEvent<any>) => {
@@ -101,7 +130,16 @@ export const AddAuditoryModal: React.FC<AddAuditoryModalProps> = observer(({
         >
             <div className='uk-flex uk-flex-between'>
                 <p style={{ fontWeight: 'bold' }}>
-                    Добавить аудиторию
+                    {
+                        !editData.id ? (
+                            'Добавить '
+                        )
+                        : (
+                            'Изменить '
+                        )
+                    } 
+                    
+                    аудиторию
                 </p>
 
                 <BackButton
