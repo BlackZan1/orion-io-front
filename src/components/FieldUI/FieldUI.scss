@@ -1,0 +1,37 @@
+.fieldUI {
+  display: grid;
+  grid-template-columns: 15% 85%;
+//   align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 0.7rem;
+
+  &__name {
+    opacity: 0.7;
+    font-weight: 400;
+    font-size: 15px;
+  }
+
+  &__name.blue {
+    color: blue;
+  }
+
+  &__result {
+    font-size: 16px;
+  }
+
+  &:last-child {
+      margin-bottom: 0;
+  }
+}
+
+@media (max-width: 850px) {
+    .fieldUI {
+        grid-template-columns: 20% 80%;
+    }
+}
+
+@media (max-width: 650px) {
+    .fieldUI {
+        grid-template-columns: 100%;
+    }
+}

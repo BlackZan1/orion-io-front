@@ -22,12 +22,16 @@ import { AuthStore } from 'store/auth'
 
 // styles
 import './User.scss'
+import { FieldUI } from 'components/FieldUI/FieldUI'
+import { EditUserInfoModal } from 'components/EditUserInfoModal'
 
 export const UserContainer: React.FC = observer(() => {
     const [authStore] = useState(AuthStore)
     const { id } = useParams<{ id: string }>()
     const [userStore] = useState(UserStore)
     const { rename } = usePageTitle('OrionIO | ')
+
+    const [modal, setModal] = useState<boolean>(false)
 
     const {
         firstName,
@@ -102,10 +106,39 @@ export const UserContainer: React.FC = observer(() => {
                                     </div>
                                 </div>
                                 
-                                <InfoBlock 
+                                <FieldUI 
+                                    label={'Телефон'} 
+                                    blue={false}
+                                >
+                                    { phone || 'Неизвестно' }
+                                </FieldUI>
+
+                                <FieldUI 
+                                    label={'Почта'} 
+                                    blue={false}
+                                >
+                                    { email || 'Неизвестно' }
+                                </FieldUI>
+
+                                <FieldUI 
+                                    label={'Учебное пространство'} 
+                                    blue={false}
+                                >
+                                    { studySpace.name }
+                                </FieldUI>
+
+                                <FieldUI 
+                                    label={'Учебное пространство'} 
+                                    blue={false}
+                                >
+                                    { studySpace.name }
+                                </FieldUI>
+
+                                {/* <InfoBlock 
                                     style={{ width: '100%', padding: 0, boxShadow: '' }} 
                                     title=''
                                 >
+
                                     <Descriptions 
                                         column={1} 
                                         bordered
@@ -158,7 +191,7 @@ export const UserContainer: React.FC = observer(() => {
                                             { moment(createdAt).format('D MMMM YYYY') }
                                         </Descriptions.Item>
                                     </Descriptions>
-                                </InfoBlock>
+                                </InfoBlock> */}
                             </div>
                         </>
                     )
@@ -170,6 +203,11 @@ export const UserContainer: React.FC = observer(() => {
                     )
                 )
             }
+
+            <EditUserInfoModal 
+                visible={modal}
+                setVisible={setModal}
+            />
         </div>
     )
 })

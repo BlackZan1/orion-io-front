@@ -19,6 +19,7 @@ import { useLocaleStorage } from 'hooks/localStorage.hook'
 
 // utils
 import { routes } from 'utils/router'
+import { EditUserInfoModal } from 'components/EditUserInfoModal'
 
 export const UserLayout: React.FC<any> = observer(({
     children,
@@ -28,6 +29,8 @@ export const UserLayout: React.FC<any> = observer(({
     const { value: tokenValue } = useLocaleStorage('orion_t')
     const [authStore] = useState(AuthStore)
     const { id } = useParams<any>()
+
+    const [modal, setModal] = useState<boolean>(false)
 
     if(authStore.auth === null && !!tokenValue) return <PreloaderPage />
     if(authStore.auth === false) return <Redirect to={routes.auth.signin} />
@@ -72,7 +75,10 @@ export const UserLayout: React.FC<any> = observer(({
                                         margin: '0 10px'
                                     }}
                                 >
-                                    <div className='uk-flex uk-flex-middle'>
+                                    <div 
+                                        className='uk-flex uk-flex-middle'
+                                        onClick={() => setModal(!modal)}
+                                    >
                                         <AiOutlineEdit size={22} />
 
                                         &nbsp;
@@ -110,6 +116,11 @@ export const UserLayout: React.FC<any> = observer(({
                     { children }
                 </div>
             </div>
+
+            <EditUserInfoModal 
+                visible={modal}
+                setVisible={setModal}
+            />
         </div>
     )
 })
