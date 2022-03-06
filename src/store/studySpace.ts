@@ -11,6 +11,7 @@ import { MembersStore } from './members'
 import { NewsStore } from './news'
 import { TokensStore } from './tokens'
 import { ScheduleStore } from './schedule'
+import { GroupLessonsStore } from './groupLessons'
 
 const service = new StudySpaceService()
 const groupService = new GroupService()
@@ -68,7 +69,8 @@ class StudySpace implements StudySpaceStoreState {
             MembersStore,
             NewsStore,
             TokensStore,
-            ScheduleStore
+            ScheduleStore,
+            GroupLessonsStore
         ]
 
         stores.forEach((store) => store.reset())

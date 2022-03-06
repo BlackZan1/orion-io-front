@@ -1,4 +1,6 @@
 import Axios from 'axios'
+
+// stores
 import { AuthStore } from 'store/auth'
 
 const axios = Axios.create({
@@ -9,8 +11,9 @@ axios.interceptors.response.use(
     (response) => response,
     async (err) => {
         const originalReq = err.config
+        const token = localStorage.getItem('orion_t')
 
-        if(err.response.status === 401) {
+        if(err.response.status === 401 && !!token) {
             await AuthStore.refresh()
 
             originalReq.headers['Authorization'] = `Bearer ${localStorage.getItem('orion_t')}`

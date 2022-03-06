@@ -208,7 +208,16 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
         >
             <div className='uk-flex uk-flex-between'>
                 <p style={{ fontWeight: 'bold' }}>
-                    Добавить событие
+                    {
+                        !editData.id ? (
+                            'Добавить '
+                        )
+                        : (
+                            'Изменить '
+                        )
+                    } 
+                    
+                    событие
                 </p>
 
                 <BackButton 
@@ -221,6 +230,8 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
                 <div className='uk-margin-top'>
                     <p className={`${errors.title ? 'error-text' : ''}`}>
                         Название события
+
+                        <span>*</span>
                     </p>
 
                     <Input 
@@ -247,7 +258,9 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
 
                 <div className='uk-margin-top'>
                     <p className={`${errors.description ? 'error-text' : ''}`}>
-                        Описание события
+                        Описание события 
+
+                        <span>*</span>
                     </p>
 
                     <Input 
@@ -315,9 +328,17 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
 
                 <div className='uk-margin-top uk-margin-large-bottom'>
                     <div className={`uk-flex uk-flex-between ${!!timeError ? 'error-text' : ''}`}>
-                        <p style={{ width: '40%' }}>От</p>
+                        <p style={{ width: '40%' }}>
+                            От
 
-                        <p style={{ width: '40%' }}>До</p>
+                            <span>*</span>
+                        </p>
+
+                        <p style={{ width: '40%' }}>
+                            До
+
+                            <span>*</span>
+                        </p>
                     </div>
 
                     <div className='uk-flex uk-flex-between'>

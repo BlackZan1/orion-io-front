@@ -210,36 +210,40 @@ export const FeedContainer: React.FC = observer(() => {
                 </Spin>
             </div>
 
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} className='feed__tabs'>
                 <p className='feed__tabs-title'>
                     На сегодня
                 </p>
-
-                <Spin
-                    spinning={!loaded || !newsStore.loaded}
-                    size='large'
+                
+                <Tabs
+                    defaultActiveKey='1'
+                    type='card'
+                    size='middle'
                 >
-                    <Tabs
-                        defaultActiveKey='1'
-                        type='card'
-                        size='middle'
-                        className='feed__tabs'
+                    <TabPane 
+                        tab='Расписание' 
+                        key='1'
+                        style={{ padding: 0 }}
                     >
-                        <TabPane 
-                            tab='Расписание' 
-                            key='1'
-                            style={{ padding: 0 }}
+                        <Spin
+                            spinning={!loaded}
+                            size='large'
                         >
                             <ScheduleOneDay 
                                 classes={currentLesson}
                                 isEditable={false}
                             />
-                        </TabPane>
-
-                        <TabPane 
-                            tab='Новости' 
-                            key='2'
-                            style={{ padding: 0 }}
+                        </Spin>
+                    </TabPane>
+                    
+                    <TabPane 
+                        tab='Новости' 
+                        key='2'
+                        style={{ padding: 0 }}
+                    >
+                        <Spin
+                            spinning={!newsStore.loaded}
+                            size='large'
                         >
                             <div 
                                 className={`${(!newsStore.loaded || !newsStore.data.length) ? 'uk-flex uk-flex-middle uk-flex-center' : ''}`}
@@ -285,9 +289,9 @@ export const FeedContainer: React.FC = observer(() => {
                                     )
                                 }
                             </div>
-                        </TabPane>
-                    </Tabs>
-                </Spin>
+                        </Spin>
+                    </TabPane>
+                </Tabs>
             </div>
         </>
     )

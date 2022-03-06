@@ -23,11 +23,14 @@ import { UploadAvatar } from 'components/UploadAvatar'
 // styles
 import './AddNewsModal.scss'
 
-interface AddNewsModalProps extends ModalProps {}
+interface AddNewsModalProps extends ModalProps {
+    editData?: any
+}
 
 export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
     visible,
-    setVisible
+    setVisible,
+    editData
 }) => {
     const [newsStore] = useState(NewsStore)
     const [studyStore] = useState(StudySpaceStore)
@@ -92,8 +95,17 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
             destroyOnClose
         >
             <div className='uk-flex uk-flex-between'>
-                <p style={{ fontWeight: 'bold' }}>
-                    Добавить новость
+                <p className='modal-title' style={{ fontWeight: 'bold' }}>
+                    {
+                        !editData.id ? (
+                            'Добавить '
+                        )
+                        : (
+                            'Изменить '
+                        )
+                    } 
+                    
+                    новость
                 </p>
 
                 <BackButton 
@@ -106,6 +118,8 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
                 <div className='uk-margin-top'>
                     <p className={`${errors.title ? 'error-text' : ''}`}>
                         Название новости
+
+                        <span>*</span>
                     </p>
 
                     <Input
@@ -132,6 +146,8 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
                 <div className='uk-margin-top'>
                     <p className={`${errors.details ? 'error-text' : ''}`}>
                         Описание новости
+
+                        <span>*</span>
                     </p>
 
                     <Input.TextArea

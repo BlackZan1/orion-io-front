@@ -1,0 +1,42 @@
+.lesson-item {
+    min-height: 250px;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 15px;
+    display: -webkit-flex;
+
+    &__bg {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        opacity: .2;
+    }
+
+    &__content {
+        z-index: 3;
+
+        p {
+            word-break: break-all;
+        }
+
+        &__title {
+            font-weight: 600 !important;
+        }
+
+        &__bar {
+            width: 22px;
+            height: 22px;
+            border-radius: 7px;
+        }
+
+        &__icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+    }
+}

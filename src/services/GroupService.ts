@@ -34,4 +34,22 @@ export class GroupService extends MainService {
             }
         )
     }
+
+    async getLessons(id: string, search?: string) {
+        return initAxios().get(
+            `${this.mainUrl}/api/groups/${id}/lessons`,
+            {
+                params: {
+                    q: search
+                }
+            }
+        )
+    }
+
+    async createLesson(id: string, data: any) {
+        return initAxios().post(
+            `${this.mainUrl}/api/groups/${id}/lessons`,
+            data
+        )
+    }
 }

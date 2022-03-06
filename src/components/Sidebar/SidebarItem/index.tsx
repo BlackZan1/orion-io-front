@@ -4,7 +4,8 @@ import {
     AiOutlineSchedule, 
     AiOutlineSetting,
     AiOutlineEdit,
-    AiOutlineDelete
+    AiOutlineDelete,
+    AiOutlineFolderOpen
 } from 'react-icons/ai'
 import { BiHome, BiNews } from 'react-icons/bi'
 import { FiUserPlus, FiUsers } from 'react-icons/fi'
@@ -100,6 +101,15 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
                     <FiUsers className='is-stroke-svg' color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
 
                     <span>Участники</span>
+                </div>
+
+                <div
+                    onClick={() => history.push(routes.lessons.replace(':groupId', id))} 
+                    className={`${isActive && pathname.includes('lessons') ? 'is-active' : ''}`}
+                >
+                    <AiOutlineFolderOpen color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
+
+                    <span>Занятия</span>
                 </div>
 
                 {

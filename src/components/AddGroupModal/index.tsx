@@ -14,7 +14,6 @@ import {
     notification
 } from 'antd'
 import { useForm } from 'react-hook-form'
-import moment, { Moment } from 'moment'
 import { observer } from 'mobx-react'
 
 // utils
@@ -22,7 +21,6 @@ import { ModalProps } from 'interfaces/modal'
 
 // components
 import { BackButton } from 'components/BackButton'
-import { Colors } from 'constants/colors'
 
 // stores
 import { StudySpaceStore } from 'store/studySpace'
@@ -115,6 +113,8 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
                 <div className='uk-margin-top'>
                     <p className={`${errors.name ? 'error-text' : ''}`}>
                         Название группы
+
+                        <span>*</span>
                     </p>
 
                     <Input 
@@ -141,6 +141,8 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
                 <div className='uk-margin-top'>
                     <p className={`${errors.details ? 'error-text' : ''}`}>
                         О группе
+
+                        <span>*</span>
                     </p>
 
                     <Input 
