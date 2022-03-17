@@ -25,6 +25,7 @@ export const NewsContainer: React.FC = observer(() => {
     const { rename } = usePageTitle('')
 
     const [modal, setModal] = useState<boolean>(false)
+    const [editData, setEditData] = useState<any>({})
 
     const { id: groupId, name: groupName } = studyStore.activeGroup
 
@@ -45,7 +46,10 @@ export const NewsContainer: React.FC = observer(() => {
                     <div className='news-block__btns'>
                         <AddButton 
                             title='Добавить новость'
-                            onClick={() => setModal(true)}
+                            onClick={() => {
+                                setEditData({})
+                                setModal(true)
+                            }}
                         />
                     </div>
                 )
@@ -96,6 +100,7 @@ export const NewsContainer: React.FC = observer(() => {
             <AddNewsModal 
                 visible={modal}
                 setVisible={setModal}
+                editData={editData}
             />
         </div>
     )

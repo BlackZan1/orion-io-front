@@ -37,6 +37,18 @@ export class Lessons {
     }
 
     @action
+    async searchOptional(value: string) {
+        try {   
+            const res = await service.getLessons(value)
+
+            return res.data.result
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
     async create(data: any) {
         try {   
             const res = await service.createLesson(data)

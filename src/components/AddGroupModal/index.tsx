@@ -121,8 +121,8 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
                         style={{ height: 42 }} 
                         placeholder='Введите название' 
                         className={`${errors.title ? 'is-error' : ''}`}
-                        maxLength={30}
-                        { ...register('name', { required: true, maxLength: 30 }) }
+                        maxLength={50}
+                        { ...register('name', { required: true, maxLength: 50 }) }
                         onChange={onInputChangeHandler}
                     />
 
@@ -141,16 +141,14 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
                 <div className='uk-margin-top'>
                     <p className={`${errors.details ? 'error-text' : ''}`}>
                         О группе
-
-                        <span>*</span>
                     </p>
 
                     <Input 
                         style={{ height: 42 }} 
                         placeholder='Введите описание'
-                        maxLength={300}
+                        maxLength={150}
                         className={`${errors.details ? 'is-error' : ''}`}
-                        { ...register('details', { required: true, maxLength: 150 }) }
+                        { ...register('details', { required: false, maxLength: 150 }) }
                         onChange={onInputChangeHandler} 
                     />
 

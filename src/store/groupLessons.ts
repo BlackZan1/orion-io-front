@@ -46,6 +46,20 @@ class GroupLessons {
     } 
 
     @action
+    async delete(id: string, lessonId: string) {
+        try {   
+            const res = await service.deleteLesson(id, lessonId)
+
+            if(res.data.success) {
+                this.data = [ ...this.data ].filter((i) => i.id !== lessonId)
+            }
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
     reset() {
         this.data = []
         this.loaded = false

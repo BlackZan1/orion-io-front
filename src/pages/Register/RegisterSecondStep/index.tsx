@@ -31,6 +31,7 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
         setValue
     } = useForm()
     const [birthday, setBirthday] = useState<Moment | null>()
+    const [bdError, setBdError] = useState<boolean>(true)
 
     useEffect(() => {
         const fields = [
@@ -62,15 +63,17 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
     }, [defaultData])
 
     const onSubmitHandler = (data: any) => {
-        console.log(data)
-
         if(!birthday) {
             const input: any = document.querySelector('#birthday')
 
             input.focus()
 
+            setBdError(true)
+
             return
         }
+        
+        setBdError(false)
         
         changeData({
             ...data,
@@ -84,7 +87,7 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
             case 'minLength':
                 return 'Введите больше 8 символов'
             case 'maxLength':
-                return 'Введите меньше 32 символов'
+                return 'Введите меньше 30 символов'
             case 'required':
                 return 'Поле обязательно'
             default:
@@ -108,6 +111,8 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
                 <div className='uk-margin-small-bottom'>
                     <p className={`${errors.firstName ? 'error-text' : ''}`}>
                         Имя
+
+                        <span className='error-text'>*</span>
                     </p>
 
                     <Input
@@ -115,7 +120,7 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
                         placeholder='Введите имя' 
                         className={`${errors.firstName ? 'is-error' : ''}`}
                         defaultValue={defaultData.firstName}
-                        { ...register('firstName', { required: true }) }
+                        { ...register('firstName', { required: true, maxLength: 30 }) }
                         onChange={onChangeHandler}
                     />
 
@@ -134,6 +139,8 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
                 <div className='uk-margin-top'>
                     <p className={`${errors.lastName ? 'error-text' : ''}`}>
                         Фамилия
+
+                        <span className='error-text'>*</span>
                     </p>
 
                     <Input
@@ -141,7 +148,7 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
                         placeholder='Введите фамилию' 
                         className={`${errors.lastName ? 'is-error' : ''}`}
                         defaultValue={defaultData.lastName}
-                        { ...register('lastName', { required: true }) }
+                        { ...register('lastName', { required: true, maxLength: 30 }) }
                         onChange={onChangeHandler}
                     />
 
@@ -174,6 +181,8 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
                 <div className='uk-margin-top'>
                     <p className={`${errors.phone ? 'error-text' : ''}`}>
                         Номер телефона
+
+                        <span className='error-text'>*</span>
                     </p>
 
                     <Input
@@ -182,7 +191,7 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
                         placeholder='Введите телефон' 
                         className={`${errors.phone ? 'is-error' : ''}`}
                         defaultValue={defaultData.phone}
-                        { ...register('phone', { required: true }) }
+                        { ...register('phone', { required: true, maxLength: 30 }) }
                         onChange={onChangeHandler}
                     />
 
@@ -199,8 +208,10 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
                 </div>
 
                 <div className='uk-margin-top uk-margin-medium-bottom'>
-                    <p>
+                    <p className={`${bdError ? 'error-text' : ''}`}>
                         Дата рождения
+
+                        <span className='error-text'>*</span>
                     </p>
 
                     <DatePicker 
@@ -213,6 +224,17 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
                         }
                         onChange={(value) => setBirthday(value)}
                     />
+
+                    {
+                        bdError && (
+                            <Alert
+                                className='uk-margin-small-top'
+                                showIcon
+                                type='error'
+                                message='Поле обязательно'
+                            />
+                        )
+                    }
                 </div>
             </div>
 

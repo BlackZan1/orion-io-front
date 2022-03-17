@@ -21,6 +21,7 @@ import 'styles/styles.less'
 
 // locales
 import 'moment/locale/ru'
+import { TeachersStore } from 'store/teachers'
 
 moment.locale('ru')
 
@@ -29,6 +30,7 @@ export const App = observer(() => {
     const [rolesStore] = useState(RolesStore)
     const [auditoriesStore] = useState(AuditoriesStore)
     const [lessonsStore] = useState(LessonsStore)
+    const [teachersStore] = useState(TeachersStore)
 
     const { value: tokenValue } = useLocaleStorage('orion_t')
 
@@ -40,6 +42,7 @@ export const App = observer(() => {
                 await authStore.me()
                 await auditoriesStore.getAll()
                 await lessonsStore.getAll()
+                await teachersStore.getAll()
             }
             else authStore.auth = false
         })()

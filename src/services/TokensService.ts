@@ -22,12 +22,9 @@ export class TokensService extends MainService {
         )
     }
 
-    async generateAdmin(groupId: string) {
+    async generateAdmin() {
         return initAxios().post(
-            `${this.mainUrl}/api/tokens/generate-admin`, 
-            {
-                groupId
-            }
+            `${this.mainUrl}/api/tokens/generate-admin`
         )
     }
 
@@ -37,6 +34,12 @@ export class TokensService extends MainService {
             {
                 groupId
             }
+        )
+    }
+
+    async generateTeacher() {
+        return initAxios().post(
+            `${this.mainUrl}/api/tokens/generate-teacher`
         )
     }
 

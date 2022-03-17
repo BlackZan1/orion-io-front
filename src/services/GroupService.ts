@@ -52,4 +52,10 @@ export class GroupService extends MainService {
             data
         )
     }
+
+    async deleteLesson(id: string, lessonId: string) {
+        return initAxios().delete(
+            `${this.mainUrl}/api/groups/${id}/lessons/${lessonId}`,
+        )
+    }
 }

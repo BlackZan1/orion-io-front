@@ -52,17 +52,9 @@ export const AddMemberContainer: React.FC = observer(() => {
 
         notification.success({
             message: 'Токен сгенерировался!',
-            description: 'Помните, срок действия токена 1 день.',
+            description: 'Помните, срок действия токена 1 месяц.',
             duration: 4
         })
-    }
-
-    const onDeleteHandler = async (token: string) => {
-        setLoading(true)
-
-        await tokensStore.delete(token)
-
-        setLoading(false)
     }
 
     const innerBlock = (
@@ -87,6 +79,8 @@ export const AddMemberContainer: React.FC = observer(() => {
                                         rolesStore.data.map((role, index) => {
                                             const lastItem = index + 1 === rolesStore.data.length
 
+                                            if(role.value === 'admin') return null
+
                                             return (
                                                 <Button 
                                                     className={`${lastItem ? '' : 'uk-margin-small-bottom'}`}
@@ -105,7 +99,6 @@ export const AddMemberContainer: React.FC = observer(() => {
                             <AddButton
                                 title='Добавить токен'
                                 disabled={!tokensStore.isAbleToAdd} 
-                                // onClick={() => onTokenAddHandler()}
                             />
                         </Popover>
 
@@ -135,7 +128,7 @@ export const AddMemberContainer: React.FC = observer(() => {
                             tokensStore.data.map((token, index: number) => (
                                 <TokenItem 
                                     key={index} 
-                                    onDelete={() => onDeleteHandler(token.token)}
+                                    setLoading={setLoading}
                                     { ...token }
                                 />
                             ))
@@ -172,7 +165,7 @@ export const AddMemberContainer: React.FC = observer(() => {
 
                         Один токен для для одного пользователя, 
                         и имеет срок действия, по стандарту 
-                        это 1 день.
+                        это 1 месяц.
 
                         <br />
 
@@ -185,6 +178,15 @@ export const AddMemberContainer: React.FC = observer(() => {
                         <b>
                             Вы можете получить ссылку с токеном - просто нажав на токен.
                         </b>
+
+                        <br />
+                        <br />
+
+                        Такие роли как (
+
+                        { rolesStore.admin.name } 
+                        
+                        ) добавляются в настройках учебной системы!
                     </p>
 
                     {
