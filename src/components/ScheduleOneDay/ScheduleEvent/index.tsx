@@ -7,8 +7,8 @@ interface ScheduleEventProps {
     height: number
     index: number
     lesson: {
-        color: string
         name: string
+        lesson: { color: string }
     }
     fullTime: string
     description: string
@@ -21,7 +21,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     y,
     height,
     index,
-    lesson: { name, color },
+    lesson: { lesson: { color }, name },
     fullTime,
     description,
     isEditable,

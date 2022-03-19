@@ -12,7 +12,7 @@ interface ClassItem {
     from: string
     to: string
     lesson: {
-        name: string
+        lesson: { name: string }
         color: string
     }
 }
