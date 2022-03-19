@@ -40,15 +40,15 @@ export class User {
     }
 
     @action
-    async editProfile(obj: string) {
+    async editProfile(obj: any) {
         this.loaded = false
         this.hasError = false
 
         try {
-            // const res = await service.getById(id)
+            const res = await service.editProfile(obj)
 
-            // this.data = res.data
-            // this.loaded = true
+            this.data = res.data
+            this.loaded = true
         }
         catch(err) {
             console.log(err)

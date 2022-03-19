@@ -13,9 +13,10 @@ import { PreloaderPage } from 'pages/PrealoderPage'
 
 // stores
 import { AuthStore } from 'store/auth'
+import { UserStore } from 'store/user'
 
 // hooks
-import { useLocaleStorage } from 'hooks/localStorage.hook'
+import { useLocaleStorage } from 'hooks/localStorage.hook'  
 
 // utils
 import { routes } from 'utils/router'
@@ -26,6 +27,7 @@ export const UserLayout: React.FC<any> = observer(({
     className
 }) => {
     const history = useHistory()
+    const [userStore] = useState(UserStore)
     const { value: tokenValue } = useLocaleStorage('orion_t')
     const [authStore] = useState(AuthStore)
     const { id } = useParams<any>()
@@ -36,6 +38,15 @@ export const UserLayout: React.FC<any> = observer(({
     if(authStore.auth === false) return <Redirect to={routes.auth.signin} />
 
     const isOwn = id === authStore.user.id
+
+    const editModalHandler = async (data: any) => {
+
+        await userStore.editProfile({data})
+
+        await userStore.getById(id)
+
+        setModal(false)
+    }
 
     return (
         <div className={className}>
@@ -120,6 +131,7 @@ export const UserLayout: React.FC<any> = observer(({
             <EditUserInfoModal 
                 visible={modal}
                 setVisible={setModal}
+                editData={editModalHandler}
             />
         </div>
     )

@@ -1,4 +1,5 @@
 import React, { SyntheticEvent, useState } from 'react'
+import { useParams } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { 
     Alert, 
@@ -16,6 +17,9 @@ import { StudySpaceStore } from 'store/studySpace'
 // interfaces
 import { ModalProps } from 'interfaces/modal'
 
+// helpers
+import { withoutFailObjectData } from 'utils/ObjectHelper'
+
 // components
 import { BackButton } from 'components/BackButton'
 import { UploadAvatar } from 'components/UploadAvatar'
@@ -32,8 +36,8 @@ export const EditUserInfoModal: React.FC<EditUserInfoModalProps> = observer(({
     setVisible,
     editData
 }) => {
-    const [userStore] = useState(UserStore)
     const [studyStore] = useState(StudySpaceStore)
+    const { id } = useParams<{ id: string }>()
     const { 
         register, 
         handleSubmit, 
@@ -47,19 +51,17 @@ export const EditUserInfoModal: React.FC<EditUserInfoModalProps> = observer(({
     const onSubmitHandler = async (data: any) => {
         setLoaded(false)
 
-        // await userStore.editProfile({ 
-        //     ...data, 
-        //     image: file, 
-        //     group: studyStore.activeGroup.id 
-        // })
-
-        console.log(data)
+        await editData({ 
+            ...withoutFailObjectData(data), 
+            image: file, 
+            group: studyStore.activeGroup.id 
+        })
 
         setLoaded(true)
     }
 
     const showTitleError = () => {
-        switch(errors.name.type) {
+        switch(errors.firstName && errors.firstName.type) {
             case 'minLength':
                 return 'Введите больше 1 символа'
             case 'maxLength':
@@ -72,7 +74,7 @@ export const EditUserInfoModal: React.FC<EditUserInfoModalProps> = observer(({
     }
 
     const showDetailsError = () => {
-        switch(errors.email.type) {
+        switch(errors.email && errors.email.type) {
             case 'minLength':
                 return 'Введите больше 1 символа'
             case 'maxLength':
@@ -124,7 +126,7 @@ export const EditUserInfoModal: React.FC<EditUserInfoModalProps> = observer(({
                 </div>
 
                 <div className='uk-margin-top'>
-                    <p className={`${errors.name ? 'error-text' : ''}`}>
+                    <p className={`${errors.firstName ? 'error-text' : ''}`}>
                         Имя
 
                         <span>*</span>
@@ -133,14 +135,42 @@ export const EditUserInfoModal: React.FC<EditUserInfoModalProps> = observer(({
                     <Input
                         style={{ height: 42 }} 
                         placeholder='Введите имя' 
-                        className={`${errors.name ? 'is-error' : ''}`}
+                        className={`${errors.firstName ? 'is-error' : ''}`}
                         maxLength={50}
-                        { ...register('name', { required: true, maxLength: 50 }) }
+                        { ...register('firstName', { required: true, maxLength: 50 }) }
                         onChange={onChangeHandler}
                     />
 
                     {
-                        errors.name && (
+                        errors.firstName && (
+                            <Alert
+                                className='uk-margin-small-top'
+                                showIcon
+                                type='error'
+                                message={showTitleError()}
+                            />
+                        )
+                    }
+                </div>
+
+                <div className='uk-margin-top'>
+                    <p className={`${errors.lastName ? 'error-text' : ''}`}>
+                        Фамилия
+
+                        <span>*</span>
+                    </p>
+
+                    <Input
+                        style={{ height: 42 }} 
+                        placeholder='Введите имя' 
+                        className={`${errors.lastName ? 'is-error' : ''}`}
+                        maxLength={50}
+                        { ...register('lastName', { required: true, maxLength: 50 }) }
+                        onChange={onChangeHandler}
+                    />
+
+                    {
+                        errors.lastName && (
                             <Alert
                                 className='uk-margin-small-top'
                                 showIcon
@@ -163,7 +193,7 @@ export const EditUserInfoModal: React.FC<EditUserInfoModalProps> = observer(({
                         placeholder='Введите название' 
                         className={`${errors.phone ? 'is-error' : ''}`}
                         maxLength={50}
-                        { ...register('phone', { required: true, maxLength: 50 }) }
+                        { ...register('phone', { required: false, maxLength: 50 }) }
                         onChange={onChangeHandler}
                     />
 
@@ -186,16 +216,11 @@ export const EditUserInfoModal: React.FC<EditUserInfoModalProps> = observer(({
                         <span>*</span>
                     </p>
 
-                    <Input.TextArea
-                        placeholder='Введите описание' 
-                        autoSize={{
-                            maxRows: 4,
-                            minRows: 3
-                        }}
+                    <Input
+                        placeholder='Введите название'
                         className={`${errors.email ? 'is-error' : ''}`}
                         maxLength={500}
-                        showCount
-                        { ...register('email', { required: true, maxLength: 500 }) }
+                        { ...register('email', { required: false, maxLength: 500 }) }
                         onChange={onChangeHandler}
                     />
 

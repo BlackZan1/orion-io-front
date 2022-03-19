@@ -14,10 +14,16 @@ export const FieldUI: React.FC<FieldUIInterface> = ({
 }) => (
   <div className="fieldUI">
     <div className="fieldUI__name">
-      <span className="">{label}</span>
+      <span className="">
+        {label}
+      </span>
     </div>
     <div className="fieldUI__result">
-      <span className={blue ? 'blue' : ''}>{children}</span>
+      <span 
+        className={blue ? 'blue' : ''}
+      >
+        {children}
+      </span>
     </div>
   </div>
 )

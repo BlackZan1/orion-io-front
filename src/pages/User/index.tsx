@@ -23,15 +23,12 @@ import { AuthStore } from 'store/auth'
 // styles
 import './User.scss'
 import { FieldUI } from 'components/FieldUI/FieldUI'
-import { EditUserInfoModal } from 'components/EditUserInfoModal'
 
 export const UserContainer: React.FC = observer(() => {
     const [authStore] = useState(AuthStore)
     const { id } = useParams<{ id: string }>()
     const [userStore] = useState(UserStore)
     const { rename } = usePageTitle('OrionIO | ')
-
-    const [modal, setModal] = useState<boolean>(false)
 
     const {
         firstName,
@@ -70,7 +67,7 @@ export const UserContainer: React.FC = observer(() => {
                     />
                 )
                 : (
-                    userStore.loaded ? (
+                    userStore.loaded && role ? (
                         <>
                             <div className='user-page__main-info'>
                                 <div className='user-page__main-info__grid uk-margin-medium-bottom'>
@@ -204,10 +201,6 @@ export const UserContainer: React.FC = observer(() => {
                 )
             }
 
-            <EditUserInfoModal 
-                visible={modal}
-                setVisible={setModal}
-            />
         </div>
     )
 })

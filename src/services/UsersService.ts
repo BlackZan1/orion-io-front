@@ -7,4 +7,8 @@ export class UsersService extends MainService {
     async getById(id: string) {
         return initAxios().get(`${this.mainUrl}/api/users/${id}`)
     }
+
+    async editProfile(obj: any) {
+        return initAxios().patch(`${this.mainUrl}/api/users`, obj)
+    }
 }
