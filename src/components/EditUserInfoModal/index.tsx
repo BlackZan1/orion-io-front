@@ -1,5 +1,4 @@
 import React, { SyntheticEvent, useState } from 'react'
-import { useParams } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { 
     Alert, 
@@ -11,7 +10,6 @@ import { AiOutlineFileImage } from 'react-icons/ai'
 import { observer } from 'mobx-react'
 
 // stores
-import { UserStore } from 'store/user'
 import { StudySpaceStore } from 'store/studySpace'
 
 // interfaces
@@ -37,7 +35,6 @@ export const EditUserInfoModal: React.FC<EditUserInfoModalProps> = observer(({
     editData
 }) => {
     const [studyStore] = useState(StudySpaceStore)
-    const { id } = useParams<{ id: string }>()
     const { 
         register, 
         handleSubmit, 
