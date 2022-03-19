@@ -30,6 +30,18 @@ class GroupLessons {
     }
 
     @action
+    async search(id: string, search?: string) {
+        try {
+            const res = await service.getLessons(id, search)
+
+            return res.data.result
+        }   
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
     async create(id: string, data: any) {
         this.loaded = false
 

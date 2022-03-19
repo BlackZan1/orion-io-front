@@ -8,6 +8,7 @@ import
 from 'react'
 import { 
     Alert,
+    AutoComplete,
     Button,
     Input, 
     Modal, 
@@ -28,10 +29,11 @@ import { Days } from 'constants/days'
 
 // components
 import { BackButton } from 'components/BackButton'
-import { Colors } from 'constants/colors'
 
 // stores
 import { ScheduleStore } from 'store/schedule'
+import { GroupLessonsStore } from 'store/groupLessons'
+import { StudySpaceStore } from 'store/studySpace'
 
 interface AddEventModalProps extends ModalProps {
     editData?: any
@@ -43,6 +45,9 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
     editData = {}
 }) => {
     const [scheduleStore] = useState(ScheduleStore)
+    const [groupLessonsStore] = useState(GroupLessonsStore)
+    const [studyStore] = useState(StudySpaceStore)
+
     const { 
         register, 
         handleSubmit, 
@@ -51,24 +56,28 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
         reset
     } = useForm()
     const [day, setDay] = useState<number>(moment().isoWeekday())
-    const [color, setColor] = useState<string>(Colors[0].hex)
     const [dates, setDates] = useState<any>({
         from: null,
         to: null
     })
+    const [options, setOptions] = useState<any[]>([])
+    const [selectedLesson, setSelectedLesson] = useState<string>()
     const [loaded, setLoaded] = useState<boolean>(true)
     const [timeError, setTimeError] = useState<null | string>()
+    const [lessonError, setLessonError] = useState<boolean>(false)
 
     const onSubmitHandler = async (data: any) => {
         const dataToSent: CreateEventData = {
             ...data,
-            day,
-            color
+            lesson: selectedLesson,
+            day
         }
 
         const inputFrom: any = document.querySelector('#time-from')
         const inputTo: any = document.querySelector('#time-to')
 
+        if(!selectedLesson) return setLessonError(true)
+        
         if(!dates.from) {
             setTimeError('Поля обязательны')
 
@@ -87,6 +96,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
             return
         }
 
+        setLessonError(false)
         setLoaded(false)
 
         dataToSent.startDate = dates.from.toISOString()
@@ -123,10 +133,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
 
     useEffect(() => {
         if(editData.id) {
-            const fields = [
-                'title',
-                'description'
-            ]
+            const fields = ['description']
     
             fields.forEach((field) => {
                 setValue(
@@ -138,12 +145,11 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
                     }
                 )
             })
+
+            if(editData.lesson) setSelectedLesson(editData.lesson.id)
     
             if(editData.day) setDay(editData.day)
             else setDay(moment().isoWeekday())
-    
-            if(editData.color) setColor(editData.color)
-            else setColor(Colors[0].hex)
     
             setDates({
                 from: editData.startDate ? moment(editData.startDate) : null,
@@ -157,7 +163,6 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
     }, [editData])
 
     const onDayChangeHandler = (value: number) => setDay(value)
-    const onColorChangeHandler = (value: string) => setColor(value)
 
     const onTimeChangeHandler = (name: string, value: Moment | null) => {
         setDates((prev: any) => ({
@@ -172,21 +177,8 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
         setValue(name, value as string)
     }
 
-    const showTitleError = () => {
-        switch(errors.title.type) {
-            case 'minLength':
-                return 'Введите больше 1 символа'
-            case 'maxLength':
-                return 'Введите меньше 30 символов'
-            case 'required':
-                return 'Поле обязательно'
-            default:
-                return null
-        }
-    }
-
     const showDescError = () => {
-        switch(errors.title.type) {
+        switch(errors.description.type) {
             case 'minLength':
                 return 'Введите больше 1 символа'
             case 'maxLength':
@@ -196,6 +188,16 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
             default:
                 return null
         }
+    }
+
+    const onLessonsSearchHandler = async (value: string) => {
+        const data = await groupLessonsStore.search(studyStore.activeGroup.id, value.trim())
+
+        setOptions(data)
+    }
+
+    const onSelectHandler = (_value: string, option: any) => {
+        setSelectedLesson(option.key)
     }
     
     return (
@@ -228,29 +230,38 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
 
             <form onSubmit={handleSubmit(onSubmitHandler)}>
                 <div className='uk-margin-top'>
-                    <p className={`${errors.title ? 'error-text' : ''}`}>
-                        Название события
+                    <p className={`${lessonError ? 'error-text' : ''}`}>
+                        Выберите занятие
 
                         <span>*</span>
                     </p>
 
-                    <Input 
-                        style={{ height: 42 }} 
-                        placeholder='Введите название' 
-                        defaultValue={editData.title}
-                        className={`${errors.title ? 'is-error' : ''}`}
-                        maxLength={30}
-                        { ...register('title', { required: true, maxLength: 30 }) }
-                        onChange={onInputChangeHandler}
-                    />
+                    <AutoComplete 
+                        className='uk-width-1'
+                        onSelect={onSelectHandler}
+                        placeholder='Введите название'
+                        onSearch={onLessonsSearchHandler}
+                    >
+                        {
+                            options.map((lesson) => (
+                                <AutoComplete.Option 
+                                    key={lesson.id} 
+                                    name={lesson.name} 
+                                    value={lesson.name}
+                                >
+                                    { `${lesson.name} | ${lesson.lector.lastName} ${lesson.lector.firstName}` }
+                                </AutoComplete.Option>
+                            ))
+                        }
+                    </AutoComplete>
 
                     {
-                        errors.title && (
+                        lessonError && (
                             <Alert
                                 className='uk-margin-small-top'
                                 showIcon
                                 type='error'
-                                message={showTitleError()}
+                                message='Поле обязательно'
                             />
                         )
                     }
@@ -285,45 +296,23 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
                     }
                 </div>
 
-                <div className='uk-margin-top uk-flex uk-flex-between'>
-                    <div className='uk-width-1'>
-                        <p>День недели</p>
+                <div className='uk-margin-top uk-width-1'>
+                    <p>День недели</p>
 
-                        <Select
-                            aria-required
-                            className='uk-width-1'
-                            value={day}
-                            onChange={onDayChangeHandler}
-                        >
-                            {
-                                Days.map((dayItem, index) => (
-                                    <Select.Option key={index} value={dayItem.id}>
-                                        { dayItem.name }
-                                    </Select.Option>
-                                ))
-                            }
-                        </Select>
-                    </div>
-
-                    <div className='uk-margin-left' style={{ width: 220 }}>
-                        <p>Цвет</p>
-
-                        <Select
-                            className='uk-width-1'
-                            value={color}
-                            onChange={onColorChangeHandler}
-                        >
-                            {
-                                Colors.map((colorItem, index) => (
-                                    <Select.Option key={index} value={colorItem.hex}>
-                                        <Tag color={colorItem.hex} className='uk-width-1'>
-                                            { colorItem.name }
-                                        </Tag>
-                                    </Select.Option>
-                                ))
-                            }
-                        </Select>
-                    </div>
+                    <Select
+                        aria-required
+                        className='uk-width-1'
+                        value={day}
+                        onChange={onDayChangeHandler}
+                    >
+                        {
+                            Days.map((dayItem, index) => (
+                                <Select.Option key={index} value={dayItem.id}>
+                                    { dayItem.name }
+                                </Select.Option>
+                            ))
+                        }
+                    </Select>
                 </div>
 
                 <div className='uk-margin-top uk-margin-large-bottom'>

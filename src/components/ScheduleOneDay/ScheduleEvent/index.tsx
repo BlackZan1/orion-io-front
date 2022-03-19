@@ -6,8 +6,10 @@ interface ScheduleEventProps {
     y: number
     height: number
     index: number
-    color: string
-    title: string
+    lesson: {
+        color: string
+        name: string
+    }
     fullTime: string
     description: string
     isEditable: boolean
@@ -19,8 +21,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     y,
     height,
     index,
-    color,
-    title,
+    lesson: { name, color },
     fullTime,
     description,
     isEditable,
@@ -94,7 +95,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
                     <span 
                         style={{ fontWeight: 700, marginLeft: 5 }}
                     >
-                        { title }
+                        { name }
                     </span>
                     ,
 

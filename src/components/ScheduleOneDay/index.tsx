@@ -11,8 +11,10 @@ interface ClassItem {
     id: number
     from: string
     to: string
-    title: string
-    color: string
+    lesson: {
+        name: string
+        color: string
+    }
 }
 
 interface ScheduleOneDayProps {
