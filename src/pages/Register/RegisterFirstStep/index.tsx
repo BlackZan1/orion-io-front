@@ -88,6 +88,8 @@ export const RegisterFirstStep: React.FC<RegisterFirstStepProps> = ({
                 <div className='uk-margin-small-bottom'>
                     <p className={`${(errors.email || exist) ? 'error-text' : ''}`}>
                         Email
+
+                        <span className='error-text'>*</span>
                     </p>
 
                     <Input
@@ -125,6 +127,8 @@ export const RegisterFirstStep: React.FC<RegisterFirstStepProps> = ({
                 <div className='uk-margin-top'>
                     <p className={`${errors.password ? 'error-text' : ''}`}>
                         Пароль
+
+                        <span className='error-text'>*</span>
                     </p>
 
                     <Input.Password
@@ -151,6 +155,8 @@ export const RegisterFirstStep: React.FC<RegisterFirstStepProps> = ({
                 <div className='uk-margin-top'>
                     <p className={`${errors.repeatPassword ? 'error-text' : ''}`}>
                         Повторите пароль
+
+                        <span className='error-text'>*</span>
                     </p>
 
                     <Input.Password

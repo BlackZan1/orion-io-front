@@ -65,4 +65,30 @@ export class StudySpaceService extends MainService {
     async deleteLesson(id: string) {
         return initAxios().delete(`${this.mainUrl}/api/lessons/${id}`)
     }
+
+    async getAdmins(page = 1) {
+        return initAxios().get(
+            `${this.mainUrl}/api/study-space/admins`,
+            { params: { page } }
+        )
+    }
+
+    async getAdminsTokens() {
+        return initAxios().get(
+            `${this.mainUrl}/api/study-space/tokens-admin`,
+        )
+    }
+
+    async getTeachers(page = 1) {
+        return initAxios().get(
+            `${this.mainUrl}/api/study-space/teachers`,
+            { params: { page } }
+        )
+    }
+
+    async getTeachersTokens() {
+        return initAxios().get(
+            `${this.mainUrl}/api/study-space/tokens-teachers`,
+        )
+    }
 }

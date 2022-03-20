@@ -30,6 +30,18 @@ class GroupLessons {
     }
 
     @action
+    async search(id: string, search?: string) {
+        try {
+            const res = await service.getLessons(id, search)
+
+            return res.data.result
+        }   
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
     async create(id: string, data: any) {
         this.loaded = false
 
@@ -44,6 +56,20 @@ class GroupLessons {
 
         this.loaded = true
     } 
+
+    @action
+    async delete(id: string, lessonId: string) {
+        try {   
+            const res = await service.deleteLesson(id, lessonId)
+
+            if(res.data.success) {
+                this.data = [ ...this.data ].filter((i) => i.id !== lessonId)
+            }
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
 
     @action
     reset() {

@@ -1,8 +1,6 @@
 import 
     React, 
-    { 
-        SyntheticEvent, 
-        useEffect, 
+    {
         useState 
     } 
 from 'react'
@@ -10,7 +8,6 @@ import {
     Alert,
     AutoComplete, 
     Button, 
-    Input,
     Modal, 
     notification
 } from 'antd'
@@ -24,6 +21,7 @@ import { BackButton } from 'components/BackButton'
 import { LessonsStore } from 'store/lessons'
 import { GroupLessonsStore } from 'store/groupLessons'
 import { StudySpaceStore } from 'store/studySpace'
+import { TeachersStore } from 'store/teachers'
 
 // interfaces
 import { ModalProps } from 'interfaces/modal'
@@ -46,21 +44,28 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
         watch
     } = useForm()
     const [lessonsStore] = useState(LessonsStore)
+    const [teachersStore] = useState(TeachersStore)
     const [groupLessonsStore] = useState(GroupLessonsStore)
     const [studyStore] = useState(StudySpaceStore)
 
     const [options, setOptions] = useState<any[]>([])
+    const [teachers, setTeachers] = useState<any[]>([])
     const [loaded, setLoaded] = useState<boolean>(true)
-    const [lessonError, setLessonError] = useState<boolean>(false)
-    const [selectedLesson, setSelectedLesson] = useState<string>()
 
-    const onSubmitHandler = async (data: any) => {
+    const [lessonError, setLessonError] = useState<boolean>(false)
+    const [teacherError, setTeacherError] = useState<boolean>(false)
+
+    const [selectedLesson, setSelectedLesson] = useState<string>()
+    const [selectedTeacher, setSelectedTeacher] = useState<string>()
+
+    const onSubmitHandler = async () => {
         const dataToSent = {
-            ...data,
+            lector: selectedTeacher,
             lesson: selectedLesson
         }
 
         if(!selectedLesson) return setLessonError(true)
+        if(!selectedTeacher) return setTeacherError(true)
 
         setLoaded(false)
 
@@ -76,49 +81,24 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
         setVisible(false)
     }
 
-    const onInputChangeHandler = (ev: SyntheticEvent<any>) => {
-        const { name, value } = ev.currentTarget
+    const onSearchHandler = async (value: string) => {
+        const data = await teachersStore.search(value.trim())
 
-        setValue(name, value as string)
+        setTeachers(data)
+    }   
+
+    const onLessonsSearchHandler = async (value: string) => {
+        const data = await lessonsStore.searchOptional(value.trim())
+
+        setOptions(data)
     }
 
-    const onSelectHandler = (id: string) => setSelectedLesson(id)
+    const onSelectHandler = (_value: string, option: any) => {
+        setSelectedLesson(option.key)
+    }
 
-    useEffect(() => {
-        setOptions(
-            lessonsStore.data.map((i) => ({ 
-                value: i.name,
-                ...i,
-                label: (
-                    <div
-                        className='uk-flex uk-flex-middle'
-                    >
-                        <div 
-                            style={{
-                                width: 24,
-                                height: 24,
-                                borderRadius: 7,
-                                backgroundColor: i.color
-                            }}
-                            className='uk-margin-right'
-                        />
-
-                        { i.name }
-                    </div>
-                ) 
-            }))
-        )
-    }, [lessonsStore.data])
-
-    const showLectorError = () => {
-        switch(errors.lector.type) {
-            case 'maxLength':
-                return 'Введите меньше 150 символов'
-            case 'required':
-                return 'Поле обязательно'
-            default:
-                return null
-        }
+    const onTeacherSelectHandler = (_value: string, option: any) => {
+        setSelectedTeacher(option.key)
     }
 
     return (
@@ -149,30 +129,23 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
                     </p>
 
                     <AutoComplete 
-                        defaultValue={lessonsStore.data.find((i) => i.id === selectedLesson)?.name}
                         className='uk-width-1'
-                        options={options}
                         onSelect={onSelectHandler}
                         placeholder='Введите название'
-                        filterOption={(inputValue, option) => {
-                            if(option) {
-                                const nameExist = option!
-                                    .name
-                                    .toUpperCase()
-                                    .indexOf(inputValue.toUpperCase()) !== -1
-
-                                if(nameExist) {
-                                    setSelectedLesson(option.id)
-
-                                    return true
-                                }
-
-                                return false
-                            }
-
-                            return false
-                        }}
-                    />
+                        onSearch={onLessonsSearchHandler}
+                    >
+                        {
+                            options.map((lesson) => (
+                                <AutoComplete.Option 
+                                    key={lesson.id} 
+                                    name={lesson.name} 
+                                    value={lesson.name}
+                                >
+                                    { lesson.name }
+                                </AutoComplete.Option>
+                            ))
+                        }
+                    </AutoComplete>
 
                     {
                         lessonError && (
@@ -180,35 +153,45 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
                                 className='uk-margin-small-top'
                                 showIcon
                                 type='error'
-                                message={'Поле обязательно'}
+                                message='Поле обязательно'
                             />
                         )
                     }
                 </div>
 
                 <div className='uk-margin-top'>
-                    <p className={`${errors.lector ? 'error-text' : ''}`}>
-                        Введите ФИО лектора
+                    <p className={`${teacherError ? 'error-text' : ''}`}>
+                        Выберите преподавателя
 
                         <span>*</span>
                     </p>
 
-                    <Input 
-                        style={{ height: 42 }}
-                        placeholder='Введите ФИО' 
-                        defaultValue={editData.lector}
-                        className={`${errors.lector ? 'is-error' : ''}`}
-                        { ...register('lector', { required: true, maxLength: 150 }) }
-                        onChange={onInputChangeHandler}
-                    />
+                    <AutoComplete
+                        className='uk-width-1'
+                        onSelect={onTeacherSelectHandler}
+                        placeholder='Введите имя или фамилию'
+                        onSearch={onSearchHandler}
+                    >
+                        {
+                            teachers.map((teacher) => (
+                                <AutoComplete.Option 
+                                    key={teacher['_id']} 
+                                    name={teacher.fullname} 
+                                    value={teacher.fullname || `${teacher.firstName} ${teacher.lastName}`}
+                                >
+                                    { teacher.fullname || `${teacher.firstName} ${teacher.lastName}` }
+                                </AutoComplete.Option>
+                            ))
+                        }
+                    </AutoComplete>
 
                     {
-                        errors.lector && (
+                        teacherError && (
                             <Alert
                                 className='uk-margin-small-top'
                                 showIcon
                                 type='error'
-                                message={showLectorError()}
+                                message='Поле обязательно'
                             />
                         )
                     }

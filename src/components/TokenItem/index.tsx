@@ -3,22 +3,27 @@ import { Tag, Tooltip } from 'antd'
 import { observer } from 'mobx-react'
 import { AiOutlineDelete, AiOutlineLink } from 'react-icons/ai'
 
+// stores
+import { RolesStore } from 'store/roles'
+import { TokensStore } from 'store/tokens'
+
 // styles
 import './TokenItem.scss'
-import { RolesStore } from 'store/roles'
 
 interface TokenItemProps {
     token: string
     forRole: 'admin' | 'superUser' | 'user'
-    onDelete: () => void
+    setLoading?: (loading: boolean) => void
 }
 
 export const TokenItem: React.FC<TokenItemProps> = observer(({
     token,
     forRole,
-    onDelete
+    setLoading
 }) => {
     const [rolesStore] = useState(RolesStore)
+    const [tokensStore] = useState(TokensStore)
+    
     const [tool, setTool] = useState<string>('Нажмите на токен для получения ссылки')
 
     const copyToClipboard = () => {
@@ -30,6 +35,14 @@ export const TokenItem: React.FC<TokenItemProps> = observer(({
             setTool('Ссылка скопирована!')
         }
         else setTool('Ссылка не скопирована!')
+    }
+
+    const onDelete = async () => {
+        if(setLoading) setLoading(true)
+
+        await tokensStore.delete(token)
+
+        if(setLoading) setLoading(false)
     }
 
     const currentRole = rolesStore.data.find((i) => i.value === forRole)
@@ -70,7 +83,10 @@ export const TokenItem: React.FC<TokenItemProps> = observer(({
                         )
                     }
 
-                    <span className='uk-text-small'>
+                    <span 
+                        className='uk-text-small' 
+                        style={{ marginLeft: !currentRole ? 10 : 0 }}
+                    >
                         { token }
                     </span>
                 </div>

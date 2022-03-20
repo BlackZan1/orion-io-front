@@ -1,14 +1,28 @@
-import { Button, Popover } from 'antd'
 import React from 'react'
+import { Button, Popover } from 'antd'
+import { observer } from 'mobx-react'
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineEllipsis } from 'react-icons/ai'
+
+// interfaces
+import { LessonState } from 'interfaces/lessons'
+import { UserData } from 'interfaces/users'
 
 // styles
 import './LessonItem.scss'
 
-export const LessonItem: React.FC<any> = ({
+interface LessonItemProps {
+    lesson: LessonState
+    lector: UserData
+    id: string
+    isEditable: boolean
+    onDelete: () => void
+}
+
+export const LessonItem: React.FC<LessonItemProps> = observer(({
     lesson,
     lector,
-    isEditable
+    isEditable,
+    onDelete
 }) => {
     const menu = (
         <div className='uk-flex uk-flex-column'>
@@ -37,7 +51,7 @@ export const LessonItem: React.FC<any> = ({
                     height: 36, 
                     background: 'var(--white-color)'
                 }}
-                // onClick={onDelete}
+                onClick={onDelete}
             >
                 <div className='uk-flex uk-flex-middle error-text uk-text-small'>
                     <AiOutlineDelete
@@ -79,9 +93,7 @@ export const LessonItem: React.FC<any> = ({
                 </p>
 
                 <p className='lesson-item__content__title'>
-                    { lector }
-
-                    {' (0555-745-042)'}
+                    { `${lector.firstName} ${lector.lastName} (${lector.phone})` }
                 </p>
 
                 {
@@ -100,4 +112,4 @@ export const LessonItem: React.FC<any> = ({
             </div>
         </div>
     )
-}
+})
