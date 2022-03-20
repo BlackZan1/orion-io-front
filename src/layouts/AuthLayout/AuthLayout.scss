@@ -1,48 +1,49 @@
 .auth-layout {
-    min-height: 100vh;
-    width: 100vw;
-    display: -webkit-flex;
-    flex-direction: column;
-    align-items: center;
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  display: -webkit-flex;
+  flex-direction: column;
+  align-items: center;
 
-    &__logo > svg {
-        width: 170px;
-        height: 90px;
-        margin: 3rem 0 1rem;
+  &__logo > svg {
+    width: 170px;
+    height: 90px;
+    margin: 3rem 0 1rem;
+  }
+
+  &__content {
+    width: 420px;
+    min-height: 55vh;
+    box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.1);
+    background: var(--white-color);
+    border-radius: 12px;
+    padding: 20px;
+
+    p {
+      font-size: 16px;
+      font-weight: 500;
+
+      & > span {
+        color: var(--aqua-color);
+        font-weight: 600;
+      }
     }
-
-    &__content {
-        width: 420px;
-        min-height: 55vh;
-        box-shadow: 1px 1px 5px rgba($color: #000000, $alpha: 0.1);
-        background: var(--white-color);
-        border-radius: 12px;
-        padding: 20px;
-
-        p {
-            font-size: 16px;
-            font-weight: 500;
-
-            & > span {
-                color: var(--aqua-color);
-                font-weight: 600;
-            }
-        }
-    }
+  }
 }
 
 @media (max-width: 510px) {
-    .auth-layout {
-        &__content {
-            width: calc(100% - 20px);
-        }
+  .auth-layout {
+    &__content {
+      width: calc(100% - 20px);
     }
+  }
 }
 
 @media (max-width: 1020px) {
-    .auth-layout {
-        &__logo > svg {
-            margin-top: 1.5rem;
-        }
+  .auth-layout {
+    &__logo > svg {
+      margin-top: 1.5rem;
     }
+  }
 }

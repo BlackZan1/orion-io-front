@@ -13,26 +13,40 @@ import { PreloaderPage } from 'pages/PrealoderPage'
 
 // stores
 import { AuthStore } from 'store/auth'
+import { UserStore } from 'store/user'
 
 // hooks
-import { useLocaleStorage } from 'hooks/localStorage.hook'
+import { useLocaleStorage } from 'hooks/localStorage.hook'  
 
 // utils
 import { routes } from 'utils/router'
+import { EditUserInfoModal } from 'components/EditUserInfoModal'
 
 export const UserLayout: React.FC<any> = observer(({
     children,
     className
 }) => {
     const history = useHistory()
+    const [userStore] = useState(UserStore)
     const { value: tokenValue } = useLocaleStorage('orion_t')
     const [authStore] = useState(AuthStore)
     const { id } = useParams<any>()
+
+    const [modal, setModal] = useState<boolean>(false)
 
     if(authStore.auth === null && !!tokenValue) return <PreloaderPage />
     if(authStore.auth === false) return <Redirect to={routes.auth.signin} />
 
     const isOwn = id === authStore.user.id
+
+    const editModalHandler = async (data: any) => {
+
+        await userStore.editProfile({data})
+
+        await userStore.getById(id)
+
+        setModal(false)
+    }
 
     return (
         <div className={className}>
@@ -72,7 +86,10 @@ export const UserLayout: React.FC<any> = observer(({
                                         margin: '0 10px'
                                     }}
                                 >
-                                    <div className='uk-flex uk-flex-middle'>
+                                    <div 
+                                        className='uk-flex uk-flex-middle'
+                                        onClick={() => setModal(!modal)}
+                                    >
                                         <AiOutlineEdit size={22} />
 
                                         &nbsp;
@@ -110,6 +127,12 @@ export const UserLayout: React.FC<any> = observer(({
                     { children }
                 </div>
             </div>
+
+            <EditUserInfoModal 
+                visible={modal}
+                setVisible={setModal}
+                editData={editModalHandler}
+            />
         </div>
     )
 })

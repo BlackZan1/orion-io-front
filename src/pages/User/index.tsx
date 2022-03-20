@@ -22,6 +22,7 @@ import { AuthStore } from 'store/auth'
 
 // styles
 import './User.scss'
+import { FieldUI } from 'components/FieldUI/FieldUI'
 
 export const UserContainer: React.FC = observer(() => {
     const [authStore] = useState(AuthStore)
@@ -66,7 +67,7 @@ export const UserContainer: React.FC = observer(() => {
                     />
                 )
                 : (
-                    userStore.loaded ? (
+                    userStore.loaded && role ? (
                         <>
                             <div className='user-page__main-info'>
                                 <div className='user-page__main-info__grid uk-margin-medium-bottom'>
@@ -102,10 +103,39 @@ export const UserContainer: React.FC = observer(() => {
                                     </div>
                                 </div>
                                 
-                                <InfoBlock 
+                                <FieldUI 
+                                    label={'Телефон'} 
+                                    blue={false}
+                                >
+                                    { phone || 'Неизвестно' }
+                                </FieldUI>
+
+                                <FieldUI 
+                                    label={'Почта'} 
+                                    blue={false}
+                                >
+                                    { email || 'Неизвестно' }
+                                </FieldUI>
+
+                                <FieldUI 
+                                    label={'Учебное пространство'} 
+                                    blue={false}
+                                >
+                                    { studySpace.name }
+                                </FieldUI>
+
+                                <FieldUI 
+                                    label={'Учебное пространство'} 
+                                    blue={false}
+                                >
+                                    { studySpace.name }
+                                </FieldUI>
+
+                                {/* <InfoBlock 
                                     style={{ width: '100%', padding: 0, boxShadow: '' }} 
                                     title=''
                                 >
+
                                     <Descriptions 
                                         column={1} 
                                         bordered
@@ -158,7 +188,7 @@ export const UserContainer: React.FC = observer(() => {
                                             { moment(createdAt).format('D MMMM YYYY') }
                                         </Descriptions.Item>
                                     </Descriptions>
-                                </InfoBlock>
+                                </InfoBlock> */}
                             </div>
                         </>
                     )
@@ -170,6 +200,7 @@ export const UserContainer: React.FC = observer(() => {
                     )
                 )
             }
+
         </div>
     )
 })

@@ -38,6 +38,25 @@ export class User {
             this.hasError = true
         }
     }
+
+    @action
+    async editProfile(obj: any) {
+        this.loaded = false
+        this.hasError = false
+
+        try {
+            const res = await service.editProfile(obj)
+
+            this.data = res.data
+            this.loaded = true
+        }
+        catch(err) {
+            console.log(err)
+
+            this.loaded = true
+            this.hasError = true
+        }
+    }
 }
 
 export const UserStore = new User()

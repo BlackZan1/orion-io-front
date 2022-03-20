@@ -10,29 +10,30 @@ import { AiOutlineFileImage } from 'react-icons/ai'
 import { observer } from 'mobx-react'
 
 // stores
-import { NewsStore } from 'store/news'
 import { StudySpaceStore } from 'store/studySpace'
 
 // interfaces
 import { ModalProps } from 'interfaces/modal'
+
+// helpers
+import { withoutFailObjectData } from 'utils/ObjectHelper'
 
 // components
 import { BackButton } from 'components/BackButton'
 import { UploadAvatar } from 'components/UploadAvatar'
 
 // styles
-import './AddNewsModal.scss'
+import './EditUserInfoModal.scss'
 
-interface AddNewsModalProps extends ModalProps {
+interface EditUserInfoModalProps extends ModalProps {
     editData?: any
 }
 
-export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
+export const EditUserInfoModal: React.FC<EditUserInfoModalProps> = observer(({
     visible,
     setVisible,
     editData
 }) => {
-    const [newsStore] = useState(NewsStore)
     const [studyStore] = useState(StudySpaceStore)
     const { 
         register, 
@@ -47,8 +48,8 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
     const onSubmitHandler = async (data: any) => {
         setLoaded(false)
 
-        await newsStore.create({ 
-            ...data, 
+        await editData({ 
+            ...withoutFailObjectData(data), 
             image: file, 
             group: studyStore.activeGroup.id 
         })
@@ -57,7 +58,7 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
     }
 
     const showTitleError = () => {
-        switch(errors.title.type) {
+        switch(errors.firstName && errors.firstName.type) {
             case 'minLength':
                 return 'Введите больше 1 символа'
             case 'maxLength':
@@ -70,7 +71,7 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
     }
 
     const showDetailsError = () => {
-        switch(errors.details.type) {
+        switch(errors.email && errors.email.type) {
             case 'minLength':
                 return 'Введите больше 1 символа'
             case 'maxLength':
@@ -96,16 +97,7 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
         >
             <div className='uk-flex uk-flex-between'>
                 <p className='modal-title' style={{ fontWeight: 'bold' }}>
-                    {
-                        !editData?.id ? (
-                            'Добавить '
-                        )
-                        : (
-                            'Изменить '
-                        )
-                    } 
-                    
-                    новость
+                    Изменить профиль
                 </p>
 
                 <BackButton 
@@ -114,69 +106,9 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
                 />
             </div>
 
-            <form onSubmit={handleSubmit(onSubmitHandler)} className='add-news-modal'> 
+            <form onSubmit={handleSubmit(onSubmitHandler)} className='edit-user-info-modal'> 
                 <div className='uk-margin-top'>
-                    <p className={`${errors.title ? 'error-text' : ''}`}>
-                        Название новости
-
-                        <span>*</span>
-                    </p>
-
-                    <Input
-                        style={{ height: 42 }} 
-                        placeholder='Введите название' 
-                        className={`${errors.title ? 'is-error' : ''}`}
-                        maxLength={50}
-                        { ...register('title', { required: true, maxLength: 50 }) }
-                        onChange={onChangeHandler}
-                    />
-
-                    {
-                        errors.title && (
-                            <Alert
-                                className='uk-margin-small-top'
-                                showIcon
-                                type='error'
-                                message={showTitleError()}
-                            />
-                        )
-                    }
-                </div>
-
-                <div className='uk-margin-top'>
-                    <p className={`${errors.details ? 'error-text' : ''}`}>
-                        Описание новости
-
-                        <span>*</span>
-                    </p>
-
-                    <Input.TextArea
-                        placeholder='Введите описание' 
-                        autoSize={{
-                            maxRows: 4,
-                            minRows: 3
-                        }}
-                        className={`${errors.title ? 'is-error' : ''}`}
-                        maxLength={500}
-                        showCount
-                        { ...register('details', { required: true, maxLength: 500 }) }
-                        onChange={onChangeHandler}
-                    />
-
-                    {
-                        errors.details && (
-                            <Alert
-                                className='uk-margin-small-top'
-                                showIcon
-                                type='error'
-                                message={showDetailsError()}
-                            />
-                        )
-                    }
-                </div>
-
-                <div className='uk-margin-top'>
-                    <p>Картинка новости</p>
+                    <p>Аватар профиля</p>
 
                     <UploadAvatar 
                         setFile={setFile}
@@ -190,6 +122,117 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
                     />
                 </div>
 
+                <div className='uk-margin-top'>
+                    <p className={`${errors.firstName ? 'error-text' : ''}`}>
+                        Имя
+
+                        <span>*</span>
+                    </p>
+
+                    <Input
+                        style={{ height: 42 }} 
+                        placeholder='Введите имя' 
+                        className={`${errors.firstName ? 'is-error' : ''}`}
+                        maxLength={50}
+                        { ...register('firstName', { required: true, maxLength: 50 }) }
+                        onChange={onChangeHandler}
+                    />
+
+                    {
+                        errors.firstName && (
+                            <Alert
+                                className='uk-margin-small-top'
+                                showIcon
+                                type='error'
+                                message={showTitleError()}
+                            />
+                        )
+                    }
+                </div>
+
+                <div className='uk-margin-top'>
+                    <p className={`${errors.lastName ? 'error-text' : ''}`}>
+                        Фамилия
+
+                        <span>*</span>
+                    </p>
+
+                    <Input
+                        style={{ height: 42 }} 
+                        placeholder='Введите имя' 
+                        className={`${errors.lastName ? 'is-error' : ''}`}
+                        maxLength={50}
+                        { ...register('lastName', { required: true, maxLength: 50 }) }
+                        onChange={onChangeHandler}
+                    />
+
+                    {
+                        errors.lastName && (
+                            <Alert
+                                className='uk-margin-small-top'
+                                showIcon
+                                type='error'
+                                message={showTitleError()}
+                            />
+                        )
+                    }
+                </div>
+
+                <div className='uk-margin-top'>
+                    <p className={`${errors.phone ? 'error-text' : ''}`}>
+                        Телефон
+
+                        <span>*</span>
+                    </p>
+
+                    <Input
+                        style={{ height: 42 }} 
+                        placeholder='Введите название' 
+                        className={`${errors.phone ? 'is-error' : ''}`}
+                        maxLength={50}
+                        { ...register('phone', { required: false, maxLength: 50 }) }
+                        onChange={onChangeHandler}
+                    />
+
+                    {
+                        errors.phone && (
+                            <Alert
+                                className='uk-margin-small-top'
+                                showIcon
+                                type='error'
+                                message={showTitleError()}
+                            />
+                        )
+                    }
+                </div>
+
+                <div className='uk-margin-top'>
+                    <p className={`${errors.email ? 'error-text' : ''}`}>
+                        Почта
+
+                        <span>*</span>
+                    </p>
+
+                    <Input
+                        placeholder='Введите название'
+                        className={`${errors.email ? 'is-error' : ''}`}
+                        maxLength={500}
+                        { ...register('email', { required: false, maxLength: 500 }) }
+                        onChange={onChangeHandler}
+                    />
+
+                    {
+                        errors.email && (
+                            <Alert
+                                className='uk-margin-small-top'
+                                showIcon
+                                type='error'
+                                message={showDetailsError()}
+                            />
+                        )
+                    }
+                </div>
+
                 <div className='uk-margin-large-top uk-flex uk-flex-center'>
                     <Button
                         type='primary'
@@ -198,7 +241,7 @@ export const AddNewsModal: React.FC<AddNewsModalProps> = observer(({
                         htmlType='submit'
                         loading={!loaded}
                     >
-                        Создать
+                        Изменить
                     </Button>
                 </div>
             </form>
