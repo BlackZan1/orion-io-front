@@ -15,7 +15,12 @@ const groupService = new GroupService()
 export class News {
     data: NewsData[] = []
     loaded = false
-    params: MainParams = { page: 1, limit: 10 }
+    isMore = false
+    params: MainParams = { 
+        page: 1, 
+        limit: 10, 
+        q: '' 
+    }
 
     constructor() {
         makeAutoObservable(this)
@@ -26,16 +31,29 @@ export class News {
         this.loaded = false
 
         try {
-            const page = this.params.page || 1
-
-            const res = await groupService.getNews(groupId, page)
+            const res = await groupService.getNews(groupId, this.params)
             
             this.data = res.data.result
-            this.loaded = true
+            this.isMore = res.data.isMore
         }
         catch(err) {
             console.log(err)
-            this.loaded = true
+        }
+
+        this.loaded = true
+    }
+
+    @action
+    async nextPage(groupId: string) {
+        this.params.page += 1
+
+        try {
+            const res = await groupService.getNews(groupId, this.params)
+            
+            this.data = [ ...this.data, ...res.data.result ]
+        }
+        catch(err) {
+            console.log(err)
         }
     }
 
@@ -70,7 +88,7 @@ export class News {
     reset() {
         this.data = []
         this.loaded = false
-        this.params = { page: 1, limit: 10 }
+        this.params = { page: 1, limit: 10, q: '' }
     }
 }
 

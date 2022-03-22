@@ -92,9 +92,40 @@
                 }
             }
         }
+
+        &__mobile-btn {
+            display: none;
+        }
     }
 
     .ant-tabs-left > .ant-tabs-content-holder > .ant-tabs-content > .ant-tabs-tabpane {
         padding-left: 20px !important;
+    }
+}
+
+@media (max-width: 1020px) {
+    .main-settings__content__tabs {
+        padding-top: 10px !important;
+    }
+}
+
+@media (max-width: 550px) {
+    .main-settings {
+        &__content {
+            &__btn {
+                display: none;
+            }
+
+            &__mobile-btn {
+                display: block;
+                position: absolute;
+                top: 85px;
+                right: 10px;
+            }
+
+            &__mobile-full {
+                width: 100% !important;
+            }
+        }
     }
 }

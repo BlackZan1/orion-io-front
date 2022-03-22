@@ -30,6 +30,8 @@ export const LessonsContainer: React.FC = observer(() => {
     const [modal, setModal] = useState<boolean>(false)
     const [timer, setTimer] = useState<any>()
 
+    const [editData, setEditData] = useState<any>()
+
     const { id: groupId, name: groupName } = studyStore.activeGroup
 
     useEffect(() => {
@@ -48,28 +50,21 @@ export const LessonsContainer: React.FC = observer(() => {
         rename(`${groupName} | Занятия`)
     }, [])
 
-    const onChangeHandler = (ev: SyntheticEvent<HTMLInputElement>) => {
+    const onChangeHandler = async (ev: SyntheticEvent<HTMLInputElement>) => {
         const { value } = ev.currentTarget
 
         if(!!timer) clearTimeout(timer)
 
         if(value.trim().length) {
-            setTimer(setTimeout(() => {
-                const newOptions: any[] = groupLessonsStore.data.filter((item) => {
-                    const nameExist = item!
-                        .lesson.name
-                        .toUpperCase()
-                        .indexOf(value.toUpperCase()) !== -1
+            setTimer(setTimeout(async () => {
+                groupLessonsStore.loaded = false
 
-                    if(nameExist) {
-                        return true
-                    }
+                const data = await groupLessonsStore.search(groupId, value)
 
-                    return false
-                })
+                setOptions(data)
 
-                setOptions(newOptions)
-            }, 700))
+                groupLessonsStore.loaded = true
+            }, 150))
         }
         else setOptions(groupLessonsStore.data)
     }
@@ -161,6 +156,10 @@ export const LessonsContainer: React.FC = observer(() => {
                                     { ...item }
                                     onDelete={() => onLessonDelete(item.id)}
                                     isEditable={authStore.isAdmin}
+                                    setEdit={() => {
+                                        setEditData(item)
+                                        setModal(true)
+                                    }}
                                 />
                             ))
                         }
@@ -171,6 +170,7 @@ export const LessonsContainer: React.FC = observer(() => {
             <AddGroupLessonModal 
                 visible={modal}
                 setVisible={setModal}
+                editData={editData}
             />
         </>
     )

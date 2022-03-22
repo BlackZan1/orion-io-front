@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { notification, Result, Tabs } from 'antd'
+import { Result, Tabs } from 'antd'
 import { observer } from 'mobx-react'
 
 // hooks
@@ -53,8 +53,8 @@ export const SettingsContainer: React.FC = observer(() => {
     }
 
     const reload = (name: 'auditories' | 'lessons') => {
-        if(name === 'auditories') auditoriesStore.getAll()
-        else if(name === 'lessons') lessonsStore.getAll()
+        if(name === 'auditories') auditoriesStore.reset()
+        else if(name === 'lessons') lessonsStore.reset()
     }
 
     return (
@@ -95,6 +95,8 @@ export const SettingsContainer: React.FC = observer(() => {
                             setEditData(data)
                             setAuditoryModal(true)
                         }}
+                        isMore={auditoriesStore.isMore}
+                        next={() => auditoriesStore.nextPage()}
                     />
                 </Tabs.TabPane>
 
@@ -112,6 +114,8 @@ export const SettingsContainer: React.FC = observer(() => {
                             setEditData(data)
                             setLessonModal(true)
                         }}
+                        isMore={lessonsStore.isMore}
+                        next={() => lessonsStore.nextPage()}
                     />
                 </Tabs.TabPane>
             </Tabs>

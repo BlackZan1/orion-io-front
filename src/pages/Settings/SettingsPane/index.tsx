@@ -7,6 +7,8 @@ import {
     Spin 
 } from 'antd'
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { observer } from 'mobx-react'
 
 // components
 import { AddButton } from 'components/AddButton'
@@ -18,15 +20,19 @@ interface SettingsPaneProps {
     onAdd: () => void
     setEditData: (data: any) => void
     onDelete: (id: string) => void
+    isMore: boolean
+    next: Function
 }
 
-export const SettingsPane: React.FC<SettingsPaneProps> = ({
+export const SettingsPane: React.FC<SettingsPaneProps> = observer(({
     data,
     onSearch,
     reload,
     onAdd,
     setEditData,
-    onDelete
+    onDelete,
+    isMore,
+    next
 }) => {
     const [value, setValue] = useState<string>('')
     const [timer, setTimer] = useState<any>()
@@ -54,24 +60,43 @@ export const SettingsPane: React.FC<SettingsPaneProps> = ({
 
     return (
         <>
-            <div className='uk-flex uk-flex-between' style={{ paddingTop: 5 }}>
-                <Input 
-                    placeholder='Введите для поиска' 
-                    style={{ width: 'calc(100% - 135px)', minHeight: 42 }} 
-                    defaultValue={value}
-                    onChange={onChangeHandler}
-                />
-
+            <div className='main-settings__content__mobile-btn'>
                 <AddButton 
                     title='Создать'
                     onClick={onAdd}
                 />
             </div>
 
+            <div className='uk-flex uk-flex-between' style={{ paddingTop: 5 }}>
+                <Input 
+                    placeholder='Введите для поиска' 
+                    style={{ width: 'calc(100% - 135px)', minHeight: 42 }} 
+                    defaultValue={value}
+                    onChange={onChangeHandler}
+                    className='main-settings__content__mobile-full'
+                />
+
+                <div className='main-settings__content__btn'>
+                    <AddButton 
+                        title='Создать'
+                        onClick={onAdd}
+                    />
+                </div>
+            </div>
+
             <Divider style={{ margin: '15px 0' }} />
 
             <Spin spinning={loading}>
-                <div>
+                <InfiniteScroll
+                    dataLength={data.length}
+                    hasMore={isMore}
+                    next={() => next()}
+                    loader={(
+                        <div className='uk-flex uk-flex-center'>
+                            <Spin />
+                        </div>
+                    )}
+                >
                     {
                         data.length ? (
                             data.map((item, i) => (
@@ -125,8 +150,8 @@ export const SettingsPane: React.FC<SettingsPaneProps> = ({
                             />
                         )
                     }
-                </div>
+                </InfiniteScroll>
             </Spin>
         </>
     )
-}
+})

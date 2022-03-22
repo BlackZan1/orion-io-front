@@ -1,4 +1,5 @@
 export interface MainParams {
-    page?: number
-    limit?: number
+    page: number
+    limit: number
+    q?: string
 }

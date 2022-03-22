@@ -1,18 +1,12 @@
-import 
-    React, 
-    { 
-        SyntheticEvent, 
-        useState 
-    } 
-from 'react'
-import { 
-    Alert,
-    Button,
-    Input, 
-    Modal,
-    notification
-} from 'antd'
+import React, { SyntheticEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { 
+    Alert, 
+    Button, 
+    Input, 
+    Modal, 
+    notification 
+} from 'antd'
 import { observer } from 'mobx-react'
 
 // utils
@@ -24,13 +18,17 @@ import { BackButton } from 'components/BackButton'
 // stores
 import { StudySpaceStore } from 'store/studySpace'
 
-interface AddGroupModalProps extends ModalProps {}
+interface GroupRenameModalProps extends ModalProps {
+    defaultValue: string
+    groupId: string
+}
 
-export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
+export const GroupRenameModal: React.FC<GroupRenameModalProps> = observer(({
     visible,
-    setVisible
+    setVisible,
+    defaultValue,
+    groupId
 }) => {
-    const [studyStore] = useState(StudySpaceStore)
     const { 
         register, 
         handleSubmit, 
@@ -39,15 +37,23 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
         reset
     } = useForm()
     const [loaded, setLoaded] = useState<boolean>(true)
+    const [studyStore] = useState(StudySpaceStore)
+
+    useEffect(() => {
+        setValue('name', defaultValue)
+
+        return () => {
+            reset()
+        }
+    }, [defaultValue])
 
     const onSubmitHandler = async (data: any) => {
         setLoaded(false)
 
-        await studyStore.createGroup(data)
+        await studyStore.renameGroup(groupId, data.name)
 
         notification.success({
-            message: 'Успешно добавлено!',
-            description: 'Новая группа будет отображаться в боковом меню.',
+            message: 'Успешно обновлено!',
             duration: 2
         })
 
@@ -55,12 +61,6 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
         setVisible(false)
 
         reset()
-    }
-
-    const onInputChangeHandler = (ev: SyntheticEvent<HTMLInputElement>) => {
-        const { name, value } = ev.currentTarget
-
-        setValue(name, value as string)
     }
 
     const showNameError = () => {
@@ -76,19 +76,12 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
         }
     }
 
-    const showDetailsError = () => {
-        switch(errors.details.type) {
-            case 'minLength':
-                return 'Введите больше 1 символа'
-            case 'maxLength':
-                return 'Введите меньше 300 символов'
-            case 'required':
-                return 'Поле обязательно'
-            default:
-                return null
-        }
+    const onInputChangeHandler = (ev: SyntheticEvent<HTMLInputElement>) => {
+        const { name, value } = ev.currentTarget
+
+        setValue(name, value as string)
     }
-    
+
     return (
         <Modal
             visible={visible}
@@ -99,10 +92,10 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
         >
             <div className='uk-flex uk-flex-between'>
                 <p style={{ fontWeight: 'bold' }}>
-                    Добавить группу
+                    Переименовать группу
                 </p>
 
-                <BackButton 
+                <BackButton
                     onClick={() => setVisible(false)}
                     isIcon
                 />
@@ -116,13 +109,14 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
                         <span>*</span>
                     </p>
 
-                    <Input 
+                    <Input
                         style={{ height: 42 }} 
                         placeholder='Введите название' 
                         className={`${errors.title ? 'is-error' : ''}`}
                         maxLength={50}
                         { ...register('name', { required: true, maxLength: 50 }) }
                         onChange={onInputChangeHandler}
+                        defaultValue={defaultValue}
                     />
 
                     {
@@ -137,32 +131,6 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
                     }
                 </div>
 
-                <div className='uk-margin-top'>
-                    <p className={`${errors.details ? 'error-text' : ''}`}>
-                        О группе
-                    </p>
-
-                    <Input 
-                        style={{ height: 42 }} 
-                        placeholder='Введите описание'
-                        maxLength={150}
-                        className={`${errors.details ? 'is-error' : ''}`}
-                        { ...register('details', { required: false, maxLength: 150 }) }
-                        onChange={onInputChangeHandler} 
-                    />
-
-                    {
-                        errors.details && (
-                            <Alert
-                                className='uk-margin-small-top'
-                                showIcon
-                                type='error'
-                                message={showDetailsError()}
-                            />
-                        )
-                    }
-                </div>
-
                 <div className='uk-margin-large-top uk-flex uk-flex-center'>
                     <Button
                         type='primary'
@@ -171,7 +139,7 @@ export const AddGroupModal: React.FC<AddGroupModalProps> = observer(({
                         htmlType='submit'
                         loading={!loaded}
                     >
-                        Создать
+                        Переименовать
                     </Button>
                 </div>
             </form>

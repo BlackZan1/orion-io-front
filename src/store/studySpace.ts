@@ -89,6 +89,22 @@ class StudySpace implements StudySpaceStoreState {
     }
 
     @action
+    async renameGroup(groupId: string, name: string) {
+        try {
+            const res = await groupService.update(groupId, name)
+
+            this.data.groups = [ ...this.data.groups ].map((group) => {
+                if(group.id === groupId) return { ...group, name }
+
+                return group
+            })
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
     async deleteGroup(groupId: string) {
         try {
             const res = await groupService.delete(groupId)

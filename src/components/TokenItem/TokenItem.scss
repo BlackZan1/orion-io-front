@@ -56,3 +56,9 @@
         }
     }
 }
+
+@media (max-width: 500px) {
+    .token-item__content {
+        width: 80%;
+    }
+}

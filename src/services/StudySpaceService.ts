@@ -1,4 +1,5 @@
 import { initAxios } from 'utils/axios'
+import { MainParams } from 'interfaces/params'
 
 // services
 import { MainService } from './MainService'
@@ -8,13 +9,11 @@ export class StudySpaceService extends MainService {
         return initAxios().get(`${this.mainUrl}/api/study-space`)
     }
 
-    async getAuditories(search?: string) {
+    async getAuditories(params?: MainParams) {
         return initAxios().get(
             `${this.mainUrl}/api/auditories`, 
             { 
-                params: {
-                    q: search
-                }
+                params
             }
         )
     }
@@ -37,13 +36,11 @@ export class StudySpaceService extends MainService {
         return initAxios().delete(`${this.mainUrl}/api/auditories/${id}`)
     }
 
-    async getLessons(search?: string) {
+    async getLessons(params?: MainParams) {
         return initAxios().get(
             `${this.mainUrl}/api/lessons`, 
             { 
-                params: {
-                    q: search
-                }
+                params
             }
         )
     }

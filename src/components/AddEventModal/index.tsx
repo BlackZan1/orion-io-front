@@ -65,6 +65,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
     const [loaded, setLoaded] = useState<boolean>(true)
     const [timeError, setTimeError] = useState<null | string>()
     const [lessonError, setLessonError] = useState<boolean>(false)
+    const [timer, setTimer] = useState<any>()
 
     const onSubmitHandler = async (data: any) => {
         const dataToSent: CreateEventData = {
@@ -159,6 +160,11 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
 
         return () => {
             reset()
+            setDay(moment().isoWeekday())
+            setDates({
+                from: null,
+                to: null
+            })
         }
     }, [editData])
 
@@ -191,9 +197,13 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
     }
 
     const onLessonsSearchHandler = async (value: string) => {
-        const data = await groupLessonsStore.search(studyStore.activeGroup.id, value.trim())
+        if(timer) clearTimeout(timer)
 
-        setOptions(data)
+        setTimer(setTimeout(async () => {
+            const data = await groupLessonsStore.search(studyStore.activeGroup.id, value.trim())
+
+            setOptions(data)
+        }, 150))
     }
 
     const onSelectHandler = (_value: string, option: any) => {
@@ -241,6 +251,7 @@ export const AddEventModal: React.FC<AddEventModalProps> = observer(({
                         onSelect={onSelectHandler}
                         placeholder='Введите название'
                         onSearch={onLessonsSearchHandler}
+                        defaultValue={editData.lesson && editData.lesson.name}
                     >
                         {
                             options.map((lesson) => (

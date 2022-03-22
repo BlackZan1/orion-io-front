@@ -1,6 +1,7 @@
 import 
     React, 
     {
+        useEffect,
         useState 
     } 
 from 'react'
@@ -36,12 +37,8 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
     editData = {}
 }) => {
     const { 
-        register, 
-        handleSubmit, 
-        setValue,
-        formState: { errors },
+        handleSubmit,
         reset,
-        watch
     } = useForm()
     const [lessonsStore] = useState(LessonsStore)
     const [teachersStore] = useState(TeachersStore)
@@ -54,6 +51,8 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
 
     const [lessonError, setLessonError] = useState<boolean>(false)
     const [teacherError, setTeacherError] = useState<boolean>(false)
+    const [lessonTimer, setLessonTimer] = useState<any>()
+    const [teacherTimer, setTeacherTimer] = useState<any>()
 
     const [selectedLesson, setSelectedLesson] = useState<string>()
     const [selectedTeacher, setSelectedTeacher] = useState<string>()
@@ -69,28 +68,59 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
 
         setLoaded(false)
 
-        await groupLessonsStore.create(studyStore.activeGroup.id, dataToSent)
+        if(editData.id) {
+            await groupLessonsStore.update(
+                studyStore.activeGroup.id, 
+                editData.id, 
+                dataToSent
+            )
 
-        notification.success({
-            message: 'Успешно добавлено!',
-            description: 'Занятие будет доступно для использования.',
-            duration: 2
-        })
+            notification.success({
+                message: 'Успешно отредактировано!',
+                description: 'Занятие будет доступно для использования.',
+                duration: 2
+            })
+        }
+        else {
+            await groupLessonsStore.create(studyStore.activeGroup.id, dataToSent)
+
+            notification.success({
+                message: 'Успешно добавлено!',
+                description: 'Занятие будет доступно для использования.',
+                duration: 2
+            })
+        }
 
         setLoaded(true)
         setVisible(false)
     }
 
-    const onSearchHandler = async (value: string) => {
-        const data = await teachersStore.search(value.trim())
+    useEffect(() => {
+        return () => {
+            reset()
+            setSelectedLesson('')
+            setSelectedTeacher('')
+        }
+    }, [])
 
-        setTeachers(data)
+    const onSearchHandler = async (value: string) => {
+        if(teacherTimer) clearTimeout(teacherTimer)
+
+        setTeacherTimer(setTimeout(async () => {
+            const data = await teachersStore.search(value.trim())
+
+            setTeachers(data)
+        }, 300))
     }   
 
     const onLessonsSearchHandler = async (value: string) => {
-        const data = await lessonsStore.searchOptional(value.trim())
+        if(lessonTimer) clearTimeout(lessonTimer)
 
-        setOptions(data)
+        setLessonTimer(setTimeout(async () => {
+            const data = await lessonsStore.searchOptional(value.trim())
+
+            setOptions(data)
+        }, 300))
     }
 
     const onSelectHandler = (_value: string, option: any) => {
@@ -111,7 +141,16 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
         >
             <div className='uk-flex uk-flex-between'>
                 <p style={{ fontWeight: 'bold' }}>
-                    Добавить занятие
+                    {
+                        !editData.id ? (
+                            'Добавить '
+                        )
+                        : (
+                            'Изменить '
+                        )
+                    }  
+                    
+                    занятие
                 </p>
 
                 <BackButton
@@ -133,6 +172,7 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
                         onSelect={onSelectHandler}
                         placeholder='Введите название'
                         onSearch={onLessonsSearchHandler}
+                        defaultValue={editData.lesson?.name}
                     >
                         {
                             options.map((lesson) => (
@@ -171,6 +211,7 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
                         onSelect={onTeacherSelectHandler}
                         placeholder='Введите имя или фамилию'
                         onSearch={onSearchHandler}
+                        defaultValue={editData.lector && `${editData.lector.firstName} ${editData.lector.lastName}`}
                     >
                         {
                             teachers.map((teacher) => (
@@ -204,6 +245,7 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
                         className='uk-width-1-2'
                         htmlType='submit'
                         loading={!loaded}
+                        disabled={editData.id && (!selectedLesson && !selectedTeacher)}
                     >
                         {
                             editData.id ? (

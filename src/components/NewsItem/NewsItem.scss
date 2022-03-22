@@ -24,7 +24,7 @@
     }
 
     &__img {
-        height: max-content;
+        max-height: 400px;
         overflow: hidden;
         display: -webkit-flex;
         align-items: center;

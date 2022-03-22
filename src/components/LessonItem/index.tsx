@@ -16,13 +16,15 @@ interface LessonItemProps {
     id: string
     isEditable: boolean
     onDelete: () => void
+    setEdit: () => void
 }
 
 export const LessonItem: React.FC<LessonItemProps> = observer(({
     lesson,
     lector,
     isEditable,
-    onDelete
+    onDelete,
+    setEdit
 }) => {
     const menu = (
         <div className='uk-flex uk-flex-column'>
@@ -33,7 +35,7 @@ export const LessonItem: React.FC<LessonItemProps> = observer(({
                     height: 36, 
                     background: 'var(--white-color)'
                 }}
-                // onClick={setEdit}
+                onClick={setEdit}
             >
                 <div className='uk-flex uk-flex-middle'>
                     <AiOutlineEdit size={22} />

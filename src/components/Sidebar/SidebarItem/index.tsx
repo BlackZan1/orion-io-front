@@ -14,6 +14,7 @@ import { Popover, Button, Popconfirm } from 'antd'
 
 // utils
 import { routes } from 'utils/router'
+import { GroupRenameModal } from 'components/GroupRenameModal'
 
 interface SidebarItemProps {
     isAdmin: boolean
@@ -38,170 +39,181 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
 }) => {
     const history = useHistory()
     const [settings, setSettings] = useState<boolean>(false)
+    const [renameMode, setRenameMode] = useState<boolean>(false)
 
     const { location: { pathname } } = history
 
     return (
-        <div className='main-sidebar__item'>
-            <div className='main-sidebar__item__title'>
-                <span onClick={setOpen}>
-                    { name }
-                </span>
+        <>
+            <div className='main-sidebar__item'>
+                <div className='main-sidebar__item__title'>
+                    <span onClick={setOpen}>
+                        { name }
+                    </span>
 
-                <AiOutlineDown 
-                    size={22} 
+                    <AiOutlineDown 
+                        size={22} 
+                        style={{ 
+                            transform: `rotate(${isOpen ? 0 : 180}deg)`, 
+                            transition: 'all .4s ease'
+                        }}
+                        className='main-sidebar__item__title__icon' 
+                        onClick={setOpen}
+                    />
+                </div>
+                
+                <div 
+                    className='main-sidebar__item__items' 
                     style={{ 
-                        transform: `rotate(${isOpen ? 0 : 180}deg)`, 
-                        transition: 'all .4s ease'
+                        height: isOpen ? 'auto' : 0,
+                        opacity: isOpen ? 1 : 0,
+                        display: isOpen ? '' : 'none'
                     }}
-                    className='main-sidebar__item__title__icon' 
-                    onClick={setOpen}
-                />
-            </div>
-            
-            <div 
-                className='main-sidebar__item__items' 
-                style={{ 
-                    height: isOpen ? 'auto' : 0,
-                    opacity: isOpen ? 1 : 0,
-                    display: isOpen ? '' : 'none'
-                }}
-            >
-                <div
-                    onClick={() => history.push(routes.main.replace(':groupId', id))} 
-                    className={`${isActive && pathname.includes('feed') ? 'is-active' : ''}`}
                 >
-                    <BiHome color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
+                    <div
+                        onClick={() => history.push(routes.main.replace(':groupId', id))} 
+                        className={`${isActive && pathname.includes('feed') ? 'is-active' : ''}`}
+                    >
+                        <BiHome color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
 
-                    <span>Главная</span>
-                </div>
+                        <span>Главная</span>
+                    </div>
 
-                <div
-                    onClick={() => history.push(routes.schedule.replace(':groupId', id))} 
-                    className={`${isActive && pathname.includes('schedule') ? 'is-active' : ''}`}
-                >
-                    <AiOutlineSchedule color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
+                    <div
+                        onClick={() => history.push(routes.schedule.replace(':groupId', id))} 
+                        className={`${isActive && pathname.includes('schedule') ? 'is-active' : ''}`}
+                    >
+                        <AiOutlineSchedule color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
 
-                    <span>Расписание</span>
-                </div>
+                        <span>Расписание</span>
+                    </div>
 
-                <div
-                    onClick={() => history.push(routes.news.replace(':groupId', id))} 
-                    className={`${isActive && pathname.includes('news') ? 'is-active' : ''}`}
-                >
-                    <BiNews color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
+                    <div
+                        onClick={() => history.push(routes.news.replace(':groupId', id))} 
+                        className={`${isActive && pathname.includes('news') ? 'is-active' : ''}`}
+                    >
+                        <BiNews color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
 
-                    <span>Новости</span>
-                </div>
+                        <span>Новости</span>
+                    </div>
 
-                <div
-                    onClick={() => history.push(routes.members.replace(':groupId', id))} 
-                    className={`${isActive && pathname.includes('member') ? 'is-active' : ''}`}
-                >
-                    <FiUsers className='is-stroke-svg' color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
+                    <div
+                        onClick={() => history.push(routes.members.replace(':groupId', id))} 
+                        className={`${isActive && pathname.includes('member') ? 'is-active' : ''}`}
+                    >
+                        <FiUsers className='is-stroke-svg' color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
 
-                    <span>Участники</span>
-                </div>
+                        <span>Участники</span>
+                    </div>
 
-                <div
-                    onClick={() => history.push(routes.lessons.replace(':groupId', id))} 
-                    className={`${isActive && pathname.includes('lessons') ? 'is-active' : ''}`}
-                >
-                    <AiOutlineFolderOpen color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
+                    <div
+                        onClick={() => history.push(routes.lessons.replace(':groupId', id))} 
+                        className={`${isActive && pathname.includes('lessons') ? 'is-active' : ''}`}
+                    >
+                        <AiOutlineFolderOpen color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
 
-                    <span>Занятия</span>
-                </div>
+                        <span>Занятия</span>
+                    </div>
 
-                {
-                    isAdmin && (
-                        <Popover
-                            overlayClassName='with-arrow'
-                            placement='right'
-                            onVisibleChange={(v) => setSettings(v)}
-                            trigger='click'
-                            overlayInnerStyle={{ width: 240 }}
-                            content={(
-                                <div className='uk-flex uk-flex-column'>
-                                    <Button
-                                        type='ghost'
-                                        className='uk-margin-small-bottom'
-                                        style={{ 
-                                            height: 36, 
-                                            background: 'var(--white-color)'
-                                        }}
-                                    >
-                                        <div className='uk-flex uk-flex-middle uk-text-small'>
-                                            <AiOutlineEdit size={22} />
-
-                                            &nbsp;
-
-                                            Переименовать
-                                        </div>
-                                    </Button>
-
-                                    <Button
-                                        type='ghost'
-                                        className='uk-margin-small-bottom'
-                                        style={{ 
-                                            height: 36, 
-                                            background: 'var(--white-color)'
-                                        }}
-                                        onClick={() => history.push(routes.addMember.replace(':groupId', id))} 
-                                    >
-                                        <div className='uk-flex uk-flex-middle uk-text-small'>
-                                            <FiUserPlus size={22} />
-
-                                            &nbsp;
-
-                                            Добавить участника
-                                        </div>
-                                    </Button>
-
-                                    <hr style={{ margin: '0 0 10px 0' }} />
-
-                                    <Popconfirm
-                                        placement='bottomRight'
-                                        title='Вы действительно хотите удалить эту группу?'
-                                        okText='Да'
-                                        cancelText='Нет'
-                                        onConfirm={onDelete}
-                                    >
+                    {
+                        isAdmin && (
+                            <Popover
+                                overlayClassName='with-arrow'
+                                placement='right'
+                                onVisibleChange={(v) => setSettings(v)}
+                                trigger='click'
+                                overlayInnerStyle={{ width: 240 }}
+                                content={(
+                                    <div className='uk-flex uk-flex-column'>
                                         <Button
                                             type='ghost'
-                                            className='is-error'
+                                            className='uk-margin-small-bottom'
                                             style={{ 
                                                 height: 36, 
                                                 background: 'var(--white-color)'
                                             }}
-                                            loading={deleting}
+                                            onClick={() => setRenameMode(true)}
                                         >
-                                            <div className='uk-flex uk-flex-middle error-text uk-text-small'>
-                                                <AiOutlineDelete
-                                                    size={22} 
-                                                    color='crimson' 
-                                                />
+                                            <div className='uk-flex uk-flex-middle uk-text-small'>
+                                                <AiOutlineEdit size={22} />
 
                                                 &nbsp;
 
-                                                Удалить
+                                                Переименовать
                                             </div>
                                         </Button>
-                                    </Popconfirm>
-                                </div>
-                            )}
-                        >
-                            <div
-                                onClick={() => setSettings(true)} 
-                                className={`${settings ? 'is-active' : ''}`}
-                            >
-                                <AiOutlineSetting color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
 
-                                <span>Настройки</span>
-                            </div>
-                        </Popover>
-                    )
-                }
+                                        <Button
+                                            type='ghost'
+                                            className='uk-margin-small-bottom'
+                                            style={{ 
+                                                height: 36, 
+                                                background: 'var(--white-color)'
+                                            }}
+                                            onClick={() => history.push(routes.addMember.replace(':groupId', id))} 
+                                        >
+                                            <div className='uk-flex uk-flex-middle uk-text-small'>
+                                                <FiUserPlus size={22} />
+
+                                                &nbsp;
+
+                                                Добавить участника
+                                            </div>
+                                        </Button>
+
+                                        <hr style={{ margin: '0 0 10px 0' }} />
+
+                                        <Popconfirm
+                                            placement='bottomRight'
+                                            title='Вы действительно хотите удалить эту группу?'
+                                            okText='Да'
+                                            cancelText='Нет'
+                                            onConfirm={onDelete}
+                                        >
+                                            <Button
+                                                type='ghost'
+                                                className='is-error'
+                                                style={{ 
+                                                    height: 36, 
+                                                    background: 'var(--white-color)'
+                                                }}
+                                                loading={deleting}
+                                            >
+                                                <div className='uk-flex uk-flex-middle error-text uk-text-small'>
+                                                    <AiOutlineDelete
+                                                        size={22} 
+                                                        color='crimson' 
+                                                    />
+
+                                                    &nbsp;
+
+                                                    Удалить
+                                                </div>
+                                            </Button>
+                                        </Popconfirm>
+                                    </div>
+                                )}
+                            >
+                                <div
+                                    onClick={() => setSettings(true)} 
+                                    className={`${settings ? 'is-active' : ''}`}
+                                >
+                                    <AiOutlineSetting color='var(--grey-5-color)' style={{ marginRight: 10 }} size={24} />
+
+                                    <span>Настройки</span>
+                                </div>
+                            </Popover>
+                        )
+                    }
+                </div>
             </div>
-        </div>
+
+            <GroupRenameModal 
+                visible={renameMode}
+                setVisible={setRenameMode}
+                defaultValue={name}
+                groupId={id}
+            />
+        </>
     )
 }

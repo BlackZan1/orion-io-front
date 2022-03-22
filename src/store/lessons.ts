@@ -1,4 +1,5 @@
 import { action, makeAutoObservable } from 'mobx'
+import { MainParams } from 'interfaces/params'
 
 // services
 import { StudySpaceService } from 'services/StudySpaceService'
@@ -7,6 +8,12 @@ const service = new StudySpaceService()
 
 export class Lessons {
     data: any[] = []
+    isMore = false
+    params: MainParams = {
+        page: 1,
+        limit: 10,
+        q: ''
+    }
 
     constructor() {
         makeAutoObservable(this)
@@ -26,8 +33,11 @@ export class Lessons {
 
     @action
     async search(value: string) {
+        this.params.q = value
+        this.params.page = 1
+
         try {   
-            const res = await service.getLessons(value)
+            const res = await service.getLessons(this.params)
 
             this.data = res.data.result
         }
@@ -39,9 +49,28 @@ export class Lessons {
     @action
     async searchOptional(value: string) {
         try {   
-            const res = await service.getLessons(value)
+            const res = await service.getLessons({ 
+                q: value,
+                limit: 10,
+                page: 1
+            })
 
             return res.data.result
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
+    async nextPage() {
+        this.params.page += 1
+        
+        try {   
+            const res = await service.getLessons(this.params)
+
+            this.data = [ ...this.data, ...res.data.result ]
+            this.isMore = res.data.isMore
         }
         catch(err) {
             console.log(err)
@@ -88,6 +117,16 @@ export class Lessons {
         catch(err) {
             console.log(err)
         }
+    }
+
+    @action
+    reset() {
+        this.params = {
+            page: 1,
+            limit: 10,
+            q: ''
+        }
+        this.getAll()
     }
 }
 

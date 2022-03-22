@@ -1,3 +1,4 @@
+import { MainParams } from 'interfaces/params'
 import { GroupData } from 'interfaces/studySpace'
 import { initAxios } from 'utils/axios'
 
@@ -13,6 +14,10 @@ export class GroupService extends MainService {
         return initAxios().delete(`${this.mainUrl}/api/groups/${groupId}`)
     }
 
+    async update(groupId: string, name: string) {
+        return initAxios().patch(`${this.mainUrl}/api/groups/${groupId}`, { name })
+    }
+
     async getTokens(id: string) {
         return initAxios().get(`${this.mainUrl}/api/groups/${id}/tokens`)
     }
@@ -26,11 +31,11 @@ export class GroupService extends MainService {
         )
     }
 
-    async getNews(id: string, page: number) {
+    async getNews(id: string, params: MainParams) {
         return initAxios().get(
             `${this.mainUrl}/api/groups/${id}/news`, 
             { 
-                params: { limit: 10, page } 
+                params
             }
         )
     }
@@ -49,6 +54,13 @@ export class GroupService extends MainService {
     async createLesson(id: string, data: any) {
         return initAxios().post(
             `${this.mainUrl}/api/groups/${id}/lessons`,
+            data
+        )
+    }
+
+    async updateLesson(id: string, lessonId: string, data: any) {
+        return initAxios().patch(
+            `${this.mainUrl}/api/groups/${id}/lessons/${lessonId}`,
             data
         )
     }

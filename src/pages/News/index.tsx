@@ -17,6 +17,7 @@ import { AddNewsModal } from 'components/AddNewsModal'
 
 // styles
 import './News.scss'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 export const NewsContainer: React.FC = observer(() => {
     const [newsStore] = useState(NewsStore)
@@ -61,9 +62,22 @@ export const NewsContainer: React.FC = observer(() => {
                 >
                     {
                         newsStore.data.length ? (
-                            newsStore.data.map((i) => (
-                                <NewsItem { ...i } key={i.id} />
-                            ))
+                            <InfiniteScroll
+                                dataLength={newsStore.data.length}
+                                hasMore={newsStore.isMore}
+                                next={() => newsStore.nextPage(groupId)}
+                                loader={(
+                                    <div className='uk-flex uk-flex-center'>
+                                        <Spin />
+                                    </div>
+                                )}
+                            >
+                                {
+                                    newsStore.data.map((i) => (
+                                        <NewsItem { ...i } key={i.id} />
+                                    ))
+                                }
+                            </InfiniteScroll>
                         )
                         : (
                             <Empty 

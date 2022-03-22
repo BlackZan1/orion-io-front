@@ -42,6 +42,27 @@ class GroupLessons {
     }
 
     @action
+    async update(id: string, lessonId: string, data: any) {
+        try {
+            const res = await service.updateLesson(id, lessonId, data)
+
+            this.data = [ ...this.data ].map((item) => {
+                if(item.id === id) {
+                    return { 
+                        ...item, 
+                        ...res.data 
+                    }
+                }
+
+                return item
+            })
+        }   
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
     async create(id: string, data: any) {
         this.loaded = false
 

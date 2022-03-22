@@ -125,132 +125,149 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = observer(({
     ]
 
     return (
-        <Tabs 
-            size='middle' 
-            defaultActiveKey={activeKey}
-            tabBarExtraContent={ 
-                activeKey === '2' && {
-                    right: (
+        <>
+            {
+                activeKey === '2' && (
+                    <div className='main-settings__content__mobile-btn'>
                         <AddButton 
-                            style={{ height: 32 }}
+                            style={{ height: 42, fontSize: 14, padding: '4px 8px' }}
                             title='Создать токен'
                             disabled={addDisabled} 
                             onClick={onAdd}
                         />
-                    )
-                }
+                    </div>
+                )
             }
-            onChange={(key) => setActiveKey(key.toString())}
-            style={{ padding: 0, border: 'none', boxShadow: 'none' }}
-        >   
-            <Tabs.TabPane tab='Участники' key='1'>
-                <div style={{ width: '100%', overflowX: 'auto' }}>
-                    <Spin spinning={!loaded} size='large'>
-                        <Table
-                            columns={cols}
-                            dataSource={data}
-                            showSorterTooltip={false}
-                            pagination={false}
-                            bordered
-                            style={{ 
-                                minWidth: 1300,
-                                maxWidth: '100%',
-                                borderRadius: 12
-                            }}
-                        />
-                    </Spin>
-                </div>
 
-                {
-                    loaded && (
-                        <div className='uk-flex-column uk-flex-end'>
-                            <Pagination
-                                current={page}
-                                defaultPageSize={10}
-                                total={allCount || 10} 
-                                style={{ marginTop: 20 }}
-                                onChange={setPage}
-                            />
-                        </div>
-                    )
+            <Tabs 
+                size='middle' 
+                defaultActiveKey={activeKey}
+                tabBarExtraContent={ 
+                    activeKey === '2' && {
+                        right: (
+                            <div className='main-settings__content__btn'>
+                                <AddButton 
+                                    style={{ height: 32, fontSize: 14 }}
+                                    title='Создать токен'
+                                    disabled={addDisabled} 
+                                    onClick={onAdd}
+                                />
+                            </div>
+                        )
+                    }
                 }
-            </Tabs.TabPane>
-
-            <Tabs.TabPane tab='Токены' key='2'>
-                <p className='uk-margin-medium-bottom'>
-                    <b>Токены</b>
-                    
-                    &nbsp;
-
-                    - это специальный текст, в котором хранятся 
-                    данные для регистрации. Они используются вместе с
-                    ссылками на странице регистрации.
-
-                    <br />
-
-                    Один токен для для одного пользователя, 
-                    и имеет срок действия, по стандарту 
-                    это 1 месяц.
-
-                    <br />
-
-                    На каждую группу стоит ограничение в 10 токенов, 
-                    с возможностью удалять старые и добавлять новые.
-
-                    <br />
-                    <br />
-
-                    <b>
-                        Вы можете получить ссылку с токеном - просто нажав на токен.
-                    </b>
-                </p>
-
-                <Spin spinning={!loaded} size='large'>
-                    <InfoBlock
-                        bodyStyle={{ marginTop: 30 }}
-                        title={(
-                            <Tag 
-                                color={!addDisabled ? 'success' : 'warning'}
+                onChange={(key) => setActiveKey(key.toString())}
+                style={{ padding: 0, border: 'none', boxShadow: 'none' }}
+            >   
+                <Tabs.TabPane tab='Участники' key='1'>
+                    <div style={{ width: '100%', overflowX: 'auto' }}>
+                        <Spin spinning={!loaded} size='large'>
+                            <Table
+                                columns={cols}
+                                dataSource={data}
+                                showSorterTooltip={false}
+                                pagination={false}
+                                bordered
                                 style={{ 
-                                    fontSize: 16, 
-                                    height: 42, 
-                                    width: 'max-content',
-                                    display: '-webkit-flex',
-                                    paddingLeft: 15,
-                                    paddingRight: 15
+                                    minWidth: 1300,
+                                    maxWidth: '100%',
+                                    borderRadius: 12
                                 }}
-                                className='uk-flex-middle'
-                            >
-                                Добавлено
+                            />
+                        </Spin>
+                    </div>
 
-                                &nbsp;
+                    {
+                        loaded && (
+                            <div className='uk-flex-column uk-flex-end'>
+                                <Pagination
+                                    current={page}
+                                    defaultPageSize={10}
+                                    total={allCount || 10} 
+                                    style={{ marginTop: 20 }}
+                                    onChange={setPage}
+                                />
+                            </div>
+                        )
+                    }
+                </Tabs.TabPane>
 
-                                {`${tokens.length} из 10`}
-                            </Tag>
-                        )}
-                    >
-                        <div className='main-settings__content__list'>
-                            {
-                                tokens.length ? (
-                                    tokens.map((token, index: number) => (
-                                        <TokenItem 
-                                            key={index} 
-                                            // onDelete={() => onDeleteHandler(token.token)}
-                                            { ...token }
+                <Tabs.TabPane tab='Токены' key='2'>
+                    <p className='uk-margin-medium-bottom'>
+                        <b>Токены</b>
+                        
+                        &nbsp;
+
+                        - это специальный текст, в котором хранятся 
+                        данные для регистрации. Они используются вместе с
+                        ссылками на странице регистрации.
+
+                        <br />
+
+                        Один токен для для одного пользователя, 
+                        и имеет срок действия, по стандарту 
+                        это 1 месяц.
+
+                        <br />
+
+                        На каждую группу стоит ограничение в 10 токенов, 
+                        с возможностью удалять старые и добавлять новые.
+
+                        <br />
+                        <br />
+
+                        <b>
+                            Вы можете получить ссылку с токеном - просто нажав на токен.
+                        </b>
+                    </p>
+
+                    <Spin spinning={!loaded} size='large'>
+                        <InfoBlock
+                            bodyStyle={{ marginTop: 30 }}
+                            title={(
+                                <Tag 
+                                    color={!addDisabled ? 'success' : 'warning'}
+                                    style={{ 
+                                        fontSize: 16, 
+                                        height: 42, 
+                                        width: 'max-content',
+                                        display: '-webkit-flex',
+                                        paddingLeft: 15,
+                                        paddingRight: 15
+                                    }}
+                                    className='uk-flex-middle'
+                                >
+                                    Добавлено
+
+                                    &nbsp;
+
+                                    {`${tokens.length} из 10`}
+                                </Tag>
+                            )}
+                        >
+                            <div className='main-settings__content__list'>
+                                {
+                                    tokens.length ? (
+                                        tokens.map((token, index: number) => (
+                                            <TokenItem 
+                                                key={index} 
+                                                // onDelete={() => onDeleteHandler(token.token)}
+                                                { ...token }
+                                            />
+                                        ))
+                                    )    
+                                    : (
+                                        <Empty 
+                                            description='Здесь пусто!' 
+                                            className='uk-margin-top uk-margin-bottom'
                                         />
-                                    ))
-                                )    
-                                : (
-                                    <Empty 
-                                        description='Здесь пусто!' 
-                                        className='uk-margin-top uk-margin-bottom'
-                                    />
-                                )
-                            }
-                        </div>
-                    </InfoBlock>
-                </Spin>
-            </Tabs.TabPane>
-        </Tabs>
+                                    )
+                                }
+                            </div>
+                        </InfoBlock>
+                    </Spin>
+                </Tabs.TabPane>
+            </Tabs>
+        </>
     )
 })
