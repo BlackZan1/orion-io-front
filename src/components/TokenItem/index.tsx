@@ -14,12 +14,16 @@ interface TokenItemProps {
     token: string
     forRole: 'admin' | 'superUser' | 'user'
     setLoading?: (loading: boolean) => void
+    setModal: (v: boolean) => void
+    setModalData: (data: any) => void
 }
 
 export const TokenItem: React.FC<TokenItemProps> = observer(({
     token,
     forRole,
-    setLoading
+    setLoading,
+    setModal,
+    setModalData
 }) => {
     const [rolesStore] = useState(RolesStore)
     const [tokensStore] = useState(TokensStore)
@@ -28,13 +32,20 @@ export const TokenItem: React.FC<TokenItemProps> = observer(({
 
     const copyToClipboard = () => {
         const { location: { origin } } = window
+        const link = `${origin}/register?token=${token}`
 
         if('clipboard' in navigator) {
-            navigator.clipboard.writeText(`${origin}/register?token=${token}`)
+            navigator.clipboard.writeText(link)
 
             setTool('Ссылка скопирована!')
         }
-        else setTool('Ссылка не скопирована!')
+        else {
+            setModal(true)
+            setModalData({
+                title: 'Ссылка с токеном',
+                content: link
+            })
+        }
     }
 
     const onDelete = async () => {

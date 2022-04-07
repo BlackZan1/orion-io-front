@@ -1,4 +1,5 @@
 import React from 'react'
+import { MdKeyboardArrowDown } from 'react-icons/md'
 
 // styles
 import './InfoBlock.scss'
@@ -9,7 +10,11 @@ interface InfoBlockProps {
     children: React.ReactNode
     bodyStyle?: React.CSSProperties
     style?: React.CSSProperties
+    titleStyle?: React.CSSProperties
     withHeader?: boolean
+    onClick?: () => void
+    hasArrowIcon?: boolean
+    isSelected?: boolean
 }
 
 export const InfoBlock: React.FC<InfoBlockProps> = ({
@@ -18,19 +23,54 @@ export const InfoBlock: React.FC<InfoBlockProps> = ({
     children,
     bodyStyle = {},
     style = {},
-    withHeader = false
+    titleStyle = {},
+    onClick = () => null,
+    withHeader = false,
+    isSelected = false,
+    hasArrowIcon = false
 }) => {
     return (
         <div 
             className={`info-block ${withHeader ? 'with-header' : ''}`} 
-            style={{ width, ...style }}
+            style={{ 
+                width, 
+                height: (hasArrowIcon) ? (
+                    isSelected ? (
+                        'auto'
+                    )
+                    : (
+                        68
+                    )
+                ) : (
+                    'auto'
+                )
+                ,
+                ...style 
+            }}
         >
             {
                 title && (
-                    <div className='info-block__title'>
+                    <div 
+                        className={`info-block__title ${hasArrowIcon ? 'uk-flex uk-flex-between' : ''}`}
+                        style={{ ...titleStyle }}
+                        onClick={onClick}
+                    >
                         <span>
                             { title }
                         </span>
+
+                        {
+                            hasArrowIcon && (
+                                <div 
+                                    className='info-block__title__icon uk-flex uk-flex-center uk-flex-middle'
+                                    style={{ transform: isSelected ? 'rotate(180deg)' : '' }}
+                                >
+                                    <MdKeyboardArrowDown 
+                                        size={28} 
+                                    />
+                                </div>
+                            )
+                        }
                     </div>
                 )
             }

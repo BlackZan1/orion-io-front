@@ -1,3 +1,4 @@
+import { ImportUserData } from 'interfaces/groups'
 import { MainParams } from 'interfaces/params'
 import { GroupData } from 'interfaces/studySpace'
 import { initAxios } from 'utils/axios'
@@ -68,6 +69,12 @@ export class GroupService extends MainService {
     async deleteLesson(id: string, lessonId: string) {
         return initAxios().delete(
             `${this.mainUrl}/api/groups/${id}/lessons/${lessonId}`,
+        )
+    }
+
+    async importUser(id: string, data: ImportUserData) {
+        return initAxios().post(
+            `${this.mainUrl}/api/groups/${id}/import-user`, data,
         )
     }
 }

@@ -12,6 +12,7 @@ import { NewsStore } from './news'
 import { TokensStore } from './tokens'
 import { ScheduleStore } from './schedule'
 import { GroupLessonsStore } from './groupLessons'
+import { ImportUserData } from 'interfaces/groups'
 
 const service = new StudySpaceService()
 const groupService = new GroupService()
@@ -114,6 +115,17 @@ class StudySpace implements StudySpaceStoreState {
             this.data.groups = [ ...this.data.groups ].filter((i) => i.id !== groupId)
             this.activeGroup = this.data.groups[0]
             this.activeGroupId = this.data.groups[0].id
+        }
+        catch(err) {
+            console.log(err)
+        }
+    }
+
+    @action
+    async importUser(groupId: string, data: ImportUserData) {
+        try {
+            await groupService.importUser(groupId, data)
+            await MembersStore.getAll(groupId, 1)
         }
         catch(err) {
             console.log(err)

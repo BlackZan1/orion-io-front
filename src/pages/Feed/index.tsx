@@ -118,14 +118,14 @@ export const FeedContainer: React.FC = observer(() => {
                                     currentLesson.map((lesson: any, index: number) => (
                                         <>
                                             <Tag 
-                                                color={lesson.color} 
+                                                color={lesson.lesson.lesson.color} 
                                                 style={{ 
                                                     marginLeft: 4, 
                                                     marginRight: 0, 
                                                     fontSize: 14 
                                                 }}
                                             >
-                                                { lesson.title }
+                                                { lesson.lesson.name }
                                             </Tag>
 
                                             {

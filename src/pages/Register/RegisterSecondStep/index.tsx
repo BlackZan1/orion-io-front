@@ -31,7 +31,7 @@ export const RegisterSecondStep: React.FC<RegisterSecondStepProps> = ({
         setValue
     } = useForm()
     const [birthday, setBirthday] = useState<Moment | null>()
-    const [bdError, setBdError] = useState<boolean>(true)
+    const [bdError, setBdError] = useState<boolean>(false)
 
     useEffect(() => {
         const fields = [

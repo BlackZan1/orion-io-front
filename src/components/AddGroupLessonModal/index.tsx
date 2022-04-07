@@ -8,6 +8,7 @@ from 'react'
 import { 
     Alert,
     AutoComplete, 
+    Avatar, 
     Button, 
     Modal, 
     notification
@@ -110,7 +111,7 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
             const data = await teachersStore.search(value.trim())
 
             setTeachers(data)
-        }, 300))
+        }, 400))
     }   
 
     const onLessonsSearchHandler = async (value: string) => {
@@ -120,7 +121,7 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
             const data = await lessonsStore.searchOptional(value.trim())
 
             setOptions(data)
-        }, 300))
+        }, 400))
     }
 
     const onSelectHandler = (_value: string, option: any) => {
@@ -181,7 +182,19 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
                                     name={lesson.name} 
                                     value={lesson.name}
                                 >
-                                    { lesson.name }
+                                    <div>
+                                        <Avatar 
+                                            size={22} 
+                                            style={{ 
+                                                marginRight: 10, 
+                                                backgroundColor: lesson.color 
+                                            }}
+                                        />
+
+                                        <span style={{ fontSize: 14 }}>
+                                            { lesson.name }
+                                        </span>
+                                    </div>
                                 </AutoComplete.Option>
                             ))
                         }
@@ -220,7 +233,17 @@ export const AddGroupLessonModal: React.FC<AddGroupLessonModalProps> = observer(
                                     name={teacher.fullname} 
                                     value={teacher.fullname || `${teacher.firstName} ${teacher.lastName}`}
                                 >
-                                    { teacher.fullname || `${teacher.firstName} ${teacher.lastName}` }
+                                    <div className='uk-flex uk-flex-middle'>
+                                        <Avatar 
+                                            size={22} 
+                                            src={teacher.photoUrl} 
+                                            style={{ marginRight: 10 }}
+                                        />
+
+                                        <span style={{ fontSize: 14 }}>
+                                            { teacher.fullname || `${teacher.firstName} ${teacher.lastName}` }
+                                        </span>
+                                    </div>
                                 </AutoComplete.Option>
                             ))
                         }

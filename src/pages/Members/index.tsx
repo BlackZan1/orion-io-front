@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { 
+    Button,
     Pagination, 
+    Popover, 
     Spin, 
     Table, 
     Tag 
@@ -28,6 +30,7 @@ import { routes } from 'utils/router'
 
 // styles
 import './Members.scss'
+import { AiOutlineDelete, AiOutlineMore } from 'react-icons/ai'
 
 export const MembersContainer: React.FC = observer(() => {
     const [membersStore] = useState(MembersStore)
@@ -68,6 +71,31 @@ export const MembersContainer: React.FC = observer(() => {
 
         membersStore.getAll(groupId, newPage)
     }
+
+    const menu = (
+        <div className='uk-flex uk-flex-column'>
+            <Button
+                type='ghost'
+                className='is-error'
+                style={{ 
+                    height: 36, 
+                    background: 'var(--white-color)'
+                }}
+                // onClick={onDelete}
+            >
+                <div className='uk-flex uk-flex-middle error-text uk-text-small'>
+                    <AiOutlineDelete
+                        size={22} 
+                        color='crimson' 
+                    />
+
+                    &nbsp;
+
+                    Удалить из группы
+                </div>
+            </Button>
+        </div>
+    )
 
     const cols = [
         {
@@ -148,8 +176,29 @@ export const MembersContainer: React.FC = observer(() => {
                     }
                 </p>
             )
-        },
+        }
     ]
+
+    if(authStore.isAdmin) {
+        cols.push({
+            title: '',
+            dataIndex: 'id',
+            key: 'more',
+            render: (id: string) => (
+                <Popover
+                    content={menu}
+                    trigger='click'
+                    placement='right'
+                >
+                    <div 
+                        className='uk-flex uk-flex-center uk-flex-middle members__table__wrapper__icon'
+                    >
+                        <AiOutlineMore size={24} />
+                    </div>
+                </Popover>
+            )
+        })
+    }
 
     return (
         <div>

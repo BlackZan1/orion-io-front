@@ -9,11 +9,6 @@ import {
     Tag 
 } from 'antd'
 
-// components
-import { AddButton } from 'components/AddButton'
-import { InfoBlock } from 'components/InfoBlock'
-import { TokenItem } from 'components/TokenItem'
-
 // hooks
 import { usePageTitle } from 'hooks/pageTitle.hook'
 
@@ -21,6 +16,11 @@ import { usePageTitle } from 'hooks/pageTitle.hook'
 import { TokensStore } from 'store/tokens'
 import { StudySpaceStore } from 'store/studySpace'
 import { RolesStore } from 'store/roles'
+
+// components
+import { NotificationModal } from 'components/NotificationModal'
+import { AddMemderTokens } from './AddMemberTokens'
+import { AddMemberImport } from './AddMemberImport'
 
 // styles
 import './AddMember.scss'
@@ -31,9 +31,15 @@ export const AddMemberContainer: React.FC = observer(() => {
     const [rolesStore] = useState(RolesStore)
     const { rename } = usePageTitle('')
 
+    const [currentBlock, setCurrentBlock] = useState<string>('1')
+    const [modal, setModal] = useState<boolean>(false)
+    const [modalData, setModalData] = useState<any>({
+        title: '',
+        content: ''
+    })
     const [loading, setLoading] = useState<boolean>(false)
 
-    const { id: groupId } = studyStore.activeGroup
+    const { id: groupId, members } = studyStore.activeGroup
 
     useEffect(() => {
         tokensStore.getById(groupId)
@@ -57,145 +63,38 @@ export const AddMemberContainer: React.FC = observer(() => {
         })
     }
 
-    const innerBlock = (
-        <Spin spinning={loading} size='large'>
-            <InfoBlock
-                bodyStyle={{ marginTop: 30 }}
-                title={(
-                    <div className='uk-flex uk-flex-between uk-flex-middle'>
-                        <Popover
-                            style={{ width: 300 }}
-                            placement='top'
-                            content={(
-                                <div className='uk-flex uk-flex-column'>
-                                    <p
-                                        style={{ fontSize: 16 }}
-                                        className='uk-margin-bottom uk-text-middle uk-text-bold'
-                                    >
-                                        Выберите роль для регистрации:
-                                    </p>
-
-                                    {
-                                        rolesStore.data.map((role, index) => {
-                                            const lastItem = index + 1 === rolesStore.data.length
-
-                                            if(role.value === 'admin') return null
-
-                                            return (
-                                                <Button 
-                                                    className={`${lastItem ? '' : 'uk-margin-small-bottom'}`}
-                                                    style={{ height: 36 }}
-                                                    onClick={() => onTokenAddHandler(role.value)}
-                                                >
-                                                    { role.name }
-                                                </Button>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            )}
-                            trigger='click'
-                        >
-                            <AddButton
-                                title='Добавить токен'
-                                disabled={!tokensStore.isAbleToAdd} 
-                            />
-                        </Popover>
-
-                        <Tag 
-                            color={tokensStore.isAbleToAdd ? 'success' : 'warning'}
-                            style={{ 
-                                fontSize: 16, 
-                                height: 42, 
-                                display: '-webkit-flex',
-                                paddingLeft: 15,
-                                paddingRight: 15
-                            }}
-                            className='uk-flex-middle'
-                        >
-                            Добавлено
-
-                            &nbsp;
-
-                            {`${tokensStore.tokensCount} из 10`}
-                        </Tag>
-                    </div>
-                )}
-            >
-                <div className='add-member__list'>
-                    {
-                        tokensStore.tokensCount ? (
-                            tokensStore.data.map((token, index: number) => (
-                                <TokenItem 
-                                    key={index} 
-                                    setLoading={setLoading}
-                                    { ...token }
-                                />
-                            ))
-                        )    
-                        : (
-                            <Empty 
-                                description='Здесь пусто!' 
-                                className='uk-margin-top uk-margin-bottom'
-                            />
-                        )
-                    }
-                </div>
-            </InfoBlock>
-        </Spin>
-    )
-
     return (
         <div>
             <Spin spinning={!tokensStore.loaded} size='large'>
-                <InfoBlock
-                    title='Токены регистрации'
-                    bodyStyle={{ marginTop: 20 }}
-                >
-                    <p className='uk-margin-medium-bottom'>
-                        <b>Токены</b>
-                        
-                        &nbsp;
+                <AddMemberImport 
+                    currentBlock={currentBlock}
+                    setCurrentBlock={setCurrentBlock}
+                    members={members}
+                />
 
-                        - это специальный текст, в котором хранятся 
-                        данные для регистрации. Они используются вместе с
-                        ссылками на странице регистрации.
-
-                        <br />
-
-                        Один токен для для одного пользователя, 
-                        и имеет срок действия, по стандарту 
-                        это 1 месяц.
-
-                        <br />
-
-                        На каждую группу стоит ограничение в 10 токенов, 
-                        с возможностью удалять старые и добавлять новые.
-
-                        <br />
-                        <br />
-
-                        <b>
-                            Вы можете получить ссылку с токеном - просто нажав на токен.
-                        </b>
-
-                        <br />
-                        <br />
-
-                        Такие роли как (
-
-                        { rolesStore.admin.name } 
-                        
-                        ) добавляются в настройках учебной системы!
-                    </p>
-
-                    {
-                        tokensStore.loaded && (
-                            innerBlock
-                        )
-                    }
-                </InfoBlock>
+                <AddMemderTokens 
+                    currentBlock={currentBlock}
+                    setCurrentBlock={setCurrentBlock}
+                    admin={rolesStore.admin}
+                    tokensCount={tokensStore.tokensCount}
+                    loading={loading}
+                    tokensLoaded={tokensStore.loaded}
+                    rolesData={rolesStore.data}
+                    onTokenAddHandler={onTokenAddHandler}
+                    data={tokensStore.data}
+                    setLoading={setLoading}
+                    setModal={setModal}
+                    setModalData={setModalData}
+                    isAbleToAdd={tokensStore.data.length < 10}
+                />
             </Spin>
+
+            <NotificationModal 
+                visible={modal}
+                setVisible={setModal}
+                title={modalData.title}
+                content={modalData.content}
+            />
         </div>
     )
 })

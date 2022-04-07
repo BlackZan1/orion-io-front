@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { 
+    Button,
     Empty,
     Pagination,
+    Popover,
     Spin, 
     Table, 
     Tabs,
@@ -10,6 +12,7 @@ import {
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react'
+import { AiOutlineDelete, AiOutlineMore } from 'react-icons/ai'
 
 // utils
 import { routes } from 'utils/router'
@@ -41,6 +44,31 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = observer(({
     onAdd
 }) => {
     const [activeKey, setActiveKey] = useState<string>('1')
+
+    const menu = (
+        <div className='uk-flex uk-flex-column'>
+            <Button
+                type='ghost'
+                className='is-error'
+                style={{ 
+                    height: 36, 
+                    background: 'var(--white-color)'
+                }}
+                // onClick={onDelete}
+            >
+                <div className='uk-flex uk-flex-middle error-text uk-text-small'>
+                    <AiOutlineDelete
+                        size={22} 
+                        color='crimson' 
+                    />
+
+                    &nbsp;
+
+                    Удалить из системы
+                </div>
+            </Button>
+        </div>
+    )
 
     const cols = [
         {
@@ -122,6 +150,24 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = observer(({
                 </p>
             )
         },
+        {
+            title: '',
+            dataIndex: 'id',
+            key: 'more',
+            render: (id: string) => (
+                <Popover
+                    content={menu}
+                    trigger='click'
+                    placement='right'
+                >
+                    <div 
+                        className='uk-flex uk-flex-center uk-flex-middle main-settings__content__tabs__icon'
+                    >
+                        <AiOutlineMore size={24} />
+                    </div>
+                </Popover>
+            )
+        }
     ]
 
     return (

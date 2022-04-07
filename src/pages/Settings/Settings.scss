@@ -79,6 +79,15 @@
         }
 
         &__tabs {
+            &__icon {
+                cursor: pointer;
+                transition: all .3s ease;
+
+                &:hover {
+                    opacity: .8;
+                }
+            }   
+
             &.ant-tabs {
                 background: var(--white-color);
                 padding: 20px;

@@ -5,6 +5,7 @@
     padding: 20px;
     border: 1px solid var(--grey-3-color);
     overflow: hidden;
+    transition: all .4s ease;
 
     &.with-header {
         padding: 0;
@@ -35,6 +36,12 @@
         font-size: 18px;
         font-weight: 600;
         margin-bottom: .5rem;
+
+        &__icon {
+            transition: all .3s ease;
+            width: 28px;
+            height: 28px;
+        }
     }
 
     p {

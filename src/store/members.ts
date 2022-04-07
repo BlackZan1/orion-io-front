@@ -5,8 +5,10 @@ import { UserData } from 'interfaces/users'
 
 // services
 import { GroupService } from 'services/GroupService'
+import { UsersService } from 'services/UsersService'
 
 const service = new GroupService()
+const usersService = new UsersService()
 
 export class Members {
     data: UserData[] = []
@@ -38,6 +40,22 @@ export class Members {
             console.log(err)
 
             this.loaded = true
+        }
+    }
+
+    @action
+    async search(value: string) {
+        try {
+            const res = await usersService.search({
+                q: value,
+                teacher: '0',
+                'role[exclude]': 'admin'
+            })
+
+            return res.data.result
+        }
+        catch(err) {
+            console.log(err)
         }
     }
 
